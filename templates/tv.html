@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='tv.css') }}"
+        />
+
+        <link rel="stylesheet" type="text/css" href="../static/tv.css" />
+
+        <title>TV Website</title>
+    </head>
+    <body>
+        <div class="pricelist">
+
+        </div>
+        <div class="spotify">
+            <div id="currentSongCol" class="col-md pe-0" >
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                <div id="currentSongDiv" class="container-fluid text-center">
+                    <div id="gradient">
+                    <img id="album-art" src="{{img}}">
+                    
+                    <div id="currentSong" class="container songDiv">
+                        <h2 id="songname" class="scrolling-text">Songname</h2>
+                        <h3 id="song-artists" class="scrolling-text">Artist</h3>
+                        
+                        <progress id="progressbar" value="0" max="{{duration_ms}}"></progress>
+                    </div>
+                    <div id="upcoming1" class="container songDiv upcoming">
+                        <h2 id="upcoming1songname" class="scrolling-text">{{ upcoming[0].name }}</h2>
+                        <h3 id="upcoming1artists" class="scrolling-text">{{ upcoming[0].artists }}</h3>
+                    </div>
+                    
+                    <div id="upcoming2" class="container songDiv upcoming">
+                        <h2 id="upcoming2songname" class="scrolling-text">{{ upcoming[1].name }}</h2>
+                        <h3 id="upcoming2artists" class="scrolling-text">{{ upcoming[1].artists }}</h3>
+                    </div>
+                    <div id="stuff">
+                        <br>
+                        <br>
+                        {% for item in listing %}
+                        <p>{{item}}</p>
+                        
+                        {% endfor %}
+                        <br>
+                    </div>
+                    </div>
+                </div>
+
+                        
+            </div>
+        </div>
+    </body>
+</html>
