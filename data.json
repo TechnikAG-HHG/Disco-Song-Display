@@ -1,6 +1,0 @@
-{
-    "spotify_client_id": "dcea901047da4251b0437c3666eae991",
-    "spotify_client_secret": "d97ac3aacc2c4dd1a13f498667626e40",
-    "redirect_uri": "http://localhost:5000/callback",
-    "spotify_scopes": "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing user-library-read user-library-modify playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-top-read user-read-recently-played user-follow-read user-follow-modify user-read-playback-position"
-}

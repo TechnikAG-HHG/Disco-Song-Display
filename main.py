@@ -3,12 +3,21 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
 import webbrowser
+import os
+import pathlib
+import functools
+import requests
+import cachecontrol
+import google.auth.transport.requests
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from flask import Flask, request, redirect, session
 
 class SpotifyServer:
     def __init__(self, StartServer=False):
         self.server = Flask(__name__)
         # Load data from JSON file
-        with open('data.json') as json_file:
+        with open('Flask Server/data.json') as json_file:
             spotify_data = json.load(json_file)
 
         self.spotify_auth = SpotifyOAuth(client_id=spotify_data['spotify_client_id'],
@@ -136,6 +145,81 @@ class SpotifyServer:
                 return output
             else:
                 return "User is not authorized."
+        
+
+        
+        os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+        
+        GOOGLE_CLIENT_ID = "450306821477-t53clamc7s8u20adedj2fqhv0904aa8t.apps.googleusercontent.com"
+        client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
+        admins_file = os.path.join(pathlib.Path(__file__).parent, "admins.json")
+        
+        flow = Flow.from_client_secrets_file(
+            client_secrets_file=client_secrets_file,
+            scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+            redirect_uri="https://technikag.serveo.net/callback"
+        )
+        
+        def login_is_required(function):
+            @functools.wraps(function)
+            def decorator(*args, **kwargs):
+                if "google_id" not in session:
+                    session["next"] = request.url
+                    return redirect("/login")
+                else:
+                    return function(*args, **kwargs)
+            return decorator
+        
+        @app.route("/login")
+        def login():
+            authorization_url, state = flow.authorization_url()
+            session["state"] = state
+            return redirect(authorization_url)
+        
+        @app.route("/callback")
+        def callback():
+            try:
+                global session
+                state = session.pop("state", None)  # Use pop to get and remove state from session
+                if state is None or state != request.args.get("state"):
+                    return redirect("/login")
+        
+                flow.fetch_token(authorization_response=request.url)
+        
+                credentials = flow.credentials
+                request_session = requests.session()
+                cached_session = cachecontrol.CacheControl(request_session)
+                token_request = google.auth.transport.requests.Request(session=cached_session)
+        
+        
+                id_info = id_token.verify_oauth2_token(
+                    id_token=credentials._id_token,
+                    request=token_request,
+                    audience=GOOGLE_CLIENT_ID, 
+                    clock_skew_in_seconds=10
+                )
+        
+                session["google_id"] = id_info.get("sub")
+                session["name"] = id_info.get("name")
+                session["email"] = id_info.get("email")
+                return redirect(session.pop("next", "/"))
+            except:
+                return redirect("/login")
+         
+        @app.route("/logout")
+        def logout():
+            session.clear()
+            return redirect("/")
+        
+        @app.route('/administrate/set_price_list', methods=['POST'])
+        @login_is_required
+        def set_price_list():
+            # use the sent data to write savePriceList.json
+            data = request.get_json()
+            with open('Flask Server/savePriceList.json', 'w') as json_file:
+                json.dump(data, json_file)
+        
+            return "Price list has been updated."
             
         
 if __name__ == '__main__':
