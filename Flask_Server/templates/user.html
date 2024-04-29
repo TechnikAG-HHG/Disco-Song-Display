@@ -1,0 +1,48 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user.css') }}">
+<head>
+    <title>
+        Song Request
+    </title>
+    
+</head>
+<body>
+    <div class="header">
+        <h1>Disco Song Request</h1>
+        <h2>Song Request System der Technik AG</h2>
+    </div>
+    <div class="main">
+        <form method="POST">
+        
+            <p>Gib deinen Liedtitel ein:</p>
+            <input type="text" id="input" name="input">
+            <button type="submit" name="submit" value="Search">Suche</button>
+            <br>
+            <p>Dann wähle ein Lied aus:</p>
+            <br>
+            <select size="10" name="selected_items" id="searchfield">
+                {% if search_performed %}
+                {{ listbox_html|safe }}
+                {% elif warning %}
+                {{ listbox_html|safe }}
+                {% else %}
+                {{ default_message|safe }}
+                {% endif %}
+            </select>
+            
+            <script>
+                // Get the select element
+                var selectElement = document.getElementsByName("selected_items")[0];
+            
+                // Set the selectedIndex to 0
+                selectElement.selectedIndex = 0;
+            </script>
+            <br>
+            <br>
+            <button type="submit" name="submit" value="Submit">Abschicken</button>
+            <br>
+            <p>{{ message_info }}</p>
+
+        </form>
+        <a href='/logout' ><button class="Logout">Logout</button></a>
+    </div>
+</body>

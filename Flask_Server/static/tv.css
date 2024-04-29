@@ -1,0 +1,247 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap%27");
+
+* {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+body {
+    font-family: "Montserrat" !important;
+
+}
+
+#currentSongCol {
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    width: 50%;
+    
+}
+
+#currentSongDiv {
+    height: 100%;
+    backdrop-filter: blur(20px) grayscale(30%);
+}
+
+
+#currentSong {
+    width: 70%;
+    margin-top: 2vmin !important;
+    padding: 2vmin !important;
+    border-radius: 3vmin;
+}
+
+#progressbar {
+    width: 90%;
+    height: .6vmin;
+    margin-top: 2vmin !important;
+}
+
+progress {
+    -webkit-appearance: none;
+     appearance: none;
+     background-color: rgba(255,255,255,.2);
+     border-radius: 10px;
+
+}::-webkit-progress-bar {
+    background-color: rgba(255,255,255,.2);
+    border-radius: 10px;
+}::-webkit-progress-value {
+    background-color: white;
+    border-radius: 10px;
+    transition: width 100ms cubic-bezier(.5,0,.5,1);
+
+}::-moz-progress-bar {
+    background-color: white;
+    border-radius: 10px;
+    transition: width 100ms cubic-bezier(.5,0,.5,1);
+    border-radius: 10px;
+    
+}
+
+#album-art{
+	border-radius: 25px;
+}
+
+#songname {
+    font-size: 2.1vmin;
+    font-weight: black 900 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    margin-bottom: .5vmin !important;
+    /*
+    background-Image: linear-gradient(90deg,
+        transparent 5%,
+        currentColor 15%,
+        currentColor 85%,
+        transparent 95%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;*/
+}
+
+#songartists {
+    font-size: 1.4vmin;
+    opacity: 50%;
+}
+
+h1 {
+    color: #ffffff !important;
+}
+
+#gradient {
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .4)) !important;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#songcover {
+    border-radius: 1vmin;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, .2);
+}
+
+#upcoming1 {
+    width: 50%;
+    margin-top: 2vmin !important;
+    z-index: 2;
+    margin-bottom: 1vmin !important;
+}
+
+.songDiv {
+    background-color: rgba(121, 121, 121, 0.2);
+    color: #ffffff;
+    white-space: nowrap;
+    overflow:hidden;
+    background-attachment: fixed;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.2);
+}
+
+#upcoming2 {
+    width:47%;
+    z-index: 1;
+}
+
+.upcoming h2 {
+    font-size: 1.7vmin;
+    font-weight: black 900 !important;
+    margin-bottom: .5vmin !important;
+}
+
+ 
+.upcoming h3 {
+    font-size: 1vmin;
+    opacity: 50%;
+}
+
+.upcoming {
+    padding: 1vmin !important;
+    border-radius: 2.5vmin;
+}
+            
+@-moz-keyframes scroll-left {
+    0% {
+        -moz-transform: translateX(100%);
+    }
+    100% {
+        -moz-transform: translateX(-100%);
+    }
+}
+            
+@-webkit-keyframes scroll-left {
+    0% {
+        -webkit-transform: translateX(100%);
+    }
+    100% {
+        -webkit-transform: translateX(-100%);
+    }
+}
+            
+@keyframes scroll-left {
+    0% {
+        -moz-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
+    }
+    100% {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+}
+
+#foodDiv h1 {
+    padding-top: 2vmin !important;
+    font-size: 5vmin;
+}
+
+.foodtable {
+    color:#ffffff;
+    text-align: left;
+    width: 70%;
+    display: inline-table;
+}
+
+.foodtable th {
+    font-size: 4vmin;
+    padding-top: 2vmin !important;
+    padding-bottom: 4vmin !important;
+    text-align: center;
+}
+
+.foodtable th:first-child {
+    padding-top: 4vmin !important;
+}
+
+.foodtable td:first-child {
+    font-size: 2.5vmin;
+}
+
+.foodtable td:nth-child(2) {
+    font-size: 1.7vmin;
+}
+
+.foodtable td:nth-child(3) {
+    font-size: 1.7vmin;
+    color:#2ec969 !important;
+    text-align: right;
+}
+
+#gradient {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scrolling-text {
+    position: relative;
+    white-space: nowrap;
+    animation: none; /* Disable animation by default */
+    overflow: hidden;
+  }
+  
+  @keyframes scroll-left {
+    0% { transform: translateX(0%); }
+    50% {transform: translateX(-5%);}
+    100% { transform: translateX(0%); }
+  }
+
+  @keyframes scroll-left-slow {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+  
+#tabele {
+    font-size: 2000%;
+}
+#stuff {
+    display: none;
+}
+
+  
