@@ -1,3 +1,5 @@
 
 Tests/sposify.code-workspace
 .cache
+Flask Server/data.json
+Flask Server/savePriceList.json
