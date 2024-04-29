@@ -72,8 +72,8 @@ def refresh_the_token():
 
 
 # Client credentials
-client_id = "dcea901047da4251b0437c3666eae991"
-client_secret = "d97ac3aacc2c4dd1a13f498667626e40"
+client_id = "6f327ec6656f4701a85f38f785070b6b"
+client_secret = "270b38800ee24ef18153d7681c098f18"
 redirect_uri = "http://www.google.com/"
 scopes = "user-modify-playback-state,user-read-playback-state"
 
