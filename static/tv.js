@@ -1,8 +1,10 @@
+var oldProgress = 0;
+
 function setBackgroundCoverImage(url) {
     let currentSongCol = document.getElementById("currentSongCol");
     let coverImage = document.getElementById("album-art");
 
-    currentSongCol.style.backgroundImage = "url('" + url + "')";
+    currentSongCol.style.background = "url('" + url + "')";
     coverImage.src = url;
 }
 
@@ -23,9 +25,43 @@ function setSongData(number, title, artist) {
     songArtist.textContent = artist;
 }
 
-setBackgroundCoverImage(
-    "https://i.scdn.co/image/ab67616d0000b273e00f97607068f797b703559e"
-);
-setSongData(0, "Song Name", "Artist Name");
-setSongData(1, "Upcoming Song Name", "Upcoming Artist Name");
-setSongData(2, "Upcoming Song Name", "Upcoming Artist Name");
+function setProgress(progress, duration) {
+    var progressBar = document.getElementById("progressbar");
+
+    progressBar.setAttribute("max", duration);
+    progressBar.setAttribute("value", progress);
+    oldProgress = progress;
+}
+
+function calculateProgress() {
+    var progressBar = document.getElementById("progressbar");
+
+    var newValue = oldProgress + 10;
+    progressBar.setAttribute("value", newValue);
+    oldProgress = newValue;
+}
+
+function updateData() {
+    fetch("http://192.168.178.56:5000/get_spotify").then((response) => {
+        response
+            .json()
+            .then((data) => {
+                console.log(data);
+                for (var i = 0; i < 3; i++) {
+                    console.log(data[i]);
+                    if (i == 0) {
+                        setBackgroundCoverImage(data[i].image);
+                        setProgress(data[i].progress, data[i].duration);
+                    }
+                    setSongData(i, data[i].title, data[i].artists);
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    });
+}
+
+updateData();
+setInterval(updateData, 5000);
+setInterval(calculateProgress, 10);

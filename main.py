@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
@@ -29,7 +29,7 @@ class SpotifyServer:
     def init_endpoints(self):
         @self.server.route('/')
         def home():
-            return 'Hello, World!'
+            return render_template('tv.html')
 
         @self.server.route('/login')
         def user_login():

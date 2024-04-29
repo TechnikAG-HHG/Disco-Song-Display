@@ -40,7 +40,33 @@ $(document).ready(function () {
         e.preventDefault();
 
         // Create the JSON string
-        var json = {};
+        var json = {
+            categories: [],
+        };
+
+        // Iterate over each category
+        $(".category").each(function () {
+            var category = {
+                name: $(this).find('input[name="categoryName"]').val(),
+                entries: [],
+            };
+
+            // Iterate over each entry in this category
+            $(this)
+                .find(".entry")
+                .each(function () {
+                    var entry = {
+                        name: $(this).find('input[name="entryName"]').val(),
+                        price: $(this).find('input[name="entryPrice"]').val(),
+                    };
+
+                    category.entries.push(entry);
+                });
+
+            json.categories.push(category);
+        });
+
+        console.log(json);
 
         // Send the JSON string to the server endpoint
         fetch("/server-endpoint", {

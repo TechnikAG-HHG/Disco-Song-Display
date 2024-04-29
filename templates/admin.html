@@ -9,16 +9,29 @@
             type="text/css"
             href="{{ url_for('static', filename='tv.css') }}"
         />
-        <link rel="stylesheet" type="text/css" href="../static/tv.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" type="text/css" href="../static/admin.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../static/input-style.css"
+        />
 
         <title>Admin Website</title>
     </head>
     <body>
-        <form id="pricelistForm">
-            <div id="categories"></div>
-            <button type="button" id="addCategory">Add Category</button>
-            <button type="submit">Submit</button>
-        </form>
+        <div id="categories"></div>
+        <div class="button-bottom">
+            <button type="button" id="addCategory" class="button-bottom-style">
+                Add Category
+            </button>
+            <button type="submit" class="button-bottom-style">Submit</button>
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="../static/admin.js"></script>

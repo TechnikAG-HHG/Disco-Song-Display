@@ -83,11 +83,19 @@ body {
     background-size: cover;
     background-position: center;
     width: 100%;
+    filter: url(#blur-grayscale);
+    z-index: 1;
+    position: relative; /* Add position relative */
 }
 
 #currentSongDiv {
     height: 100%;
-    backdrop-filter: blur(20px) grayscale(30%);
+    filter: none; /* Remove filter from children */
+    z-index: 99;
+    position: absolute; /* Add position absolute */
+    top: 0; /* Position at the top */
+    left: 50vw; /* Position at the left */
+    width: 50%; /* Take up the full width */
 }
 
 #currentSong {
@@ -130,7 +138,7 @@ progress {
 }
 
 #songname {
-    font-size: 2.1vmin;
+    font-size: 2.8vmin;
     font-weight: black 900 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
@@ -147,9 +155,9 @@ progress {
     -webkit-text-fill-color: transparent;*/
 }
 
-#songartists {
-    font-size: 1.4vmin;
-    opacity: 50%;
+#song-artists {
+    font-size: 2.3vmin !important;
+    opacity: 80%;
 }
 
 h1 {

@@ -98,68 +98,52 @@
                 </table>
             </div>
             <div class="spotify">
-                <div id="currentSongCol" class="col-md pe-0">
-                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <div id="currentSongCol" class="col-md pe-0"></div>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-                    <div
-                        id="currentSongDiv"
-                        class="container-fluid text-center"
-                    >
-                        <div id="gradient">
-                            <img id="album-art" src="../testimage.png" />
+                <div id="currentSongDiv" class="container-fluid text-center">
+                    <div id="gradient">
+                        <img id="album-art" src="../testimage.png" />
 
-                            <div id="currentSong" class="container songDiv">
-                                <h2 id="songname" class="scrolling-text">
-                                    Songname
-                                </h2>
-                                <h3 id="song-artists" class="scrolling-text">
-                                    Artist
-                                </h3>
+                        <div id="currentSong" class="container songDiv">
+                            <h2 id="songname" class="scrolling-text">
+                                Songname
+                            </h2>
+                            <h3 id="song-artists" class="scrolling-text">
+                                Artist
+                            </h3>
 
-                                <progress
-                                    id="progressbar"
-                                    value="0"
-                                    max="0"
-                                ></progress>
-                            </div>
-                            <div
-                                id="upcoming1"
-                                class="container songDiv upcoming"
-                            >
-                                <h2
-                                    id="upcoming1songname"
-                                    class="scrolling-text"
-                                >
-                                    Upcoming Songname 1
-                                </h2>
-                                <h3
-                                    id="upcoming1artists"
-                                    class="scrolling-text"
-                                >
-                                    Upcoming Artist 1
-                                </h3>
-                            </div>
+                            <progress
+                                id="progressbar"
+                                value="0"
+                                max="0"
+                            ></progress>
+                        </div>
+                        <div id="upcoming1" class="container songDiv upcoming">
+                            <h2 id="upcoming1songname" class="scrolling-text">
+                                Upcoming Songname 1
+                            </h2>
+                            <h3 id="upcoming1artists" class="scrolling-text">
+                                Upcoming Artist 1
+                            </h3>
+                        </div>
 
-                            <div
-                                id="upcoming2"
-                                class="container songDiv upcoming"
-                            >
-                                <h2
-                                    id="upcoming2songname"
-                                    class="scrolling-text"
-                                >
-                                    Upcoming Songname 2
-                                </h2>
-                                <h3
-                                    id="upcoming2artists"
-                                    class="scrolling-text"
-                                >
-                                    Upcoming Artist 2
-                                </h3>
-                            </div>
+                        <div id="upcoming2" class="container songDiv upcoming">
+                            <h2 id="upcoming2songname" class="scrolling-text">
+                                Upcoming Songname 2
+                            </h2>
+                            <h3 id="upcoming2artists" class="scrolling-text">
+                                Upcoming Artist 2
+                            </h3>
                         </div>
                     </div>
                 </div>
+                <svg style="height: 0; width: 0; position: absolute">
+                    <filter id="blur-grayscale">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="7" />
+                        <feColorMatrix type="saturate" values="0.5" />
+                    </filter>
+                </svg>
             </div>
         </div>
 
