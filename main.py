@@ -58,6 +58,7 @@ def admin_is_required(function):
     @functools.wraps(function)
     def decorator(*args, **kwargs):
         if "google_id" not in session:
+            print("session: " + str(session))
             print("Google ID not in session")
             session["next"] = request.url
             return redirect("/google/login")
@@ -215,6 +216,8 @@ class SpotifyServer:
                 session["google_id"] = id_info.get("sub")
                 session["name"] = id_info.get("name")
                 session["email"] = id_info.get("email")
+
+                print("NExt: " + session.get("next"))
                 return redirect(session.pop("next", "/loginsuccess"))
             except:
                 return redirect("/google/login")
