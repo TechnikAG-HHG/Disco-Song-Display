@@ -42,7 +42,6 @@ class SpotifyServer:
         self.init_endpoints()
         self.start_server()
     
-
         
     # Modify the start_server method
     def start_server(self):
@@ -51,19 +50,24 @@ class SpotifyServer:
         print(f"Server IP: {server_ip}")
         webbrowser.open_new(f'http://{server_ip}:5000/login')
 
+
     def init_endpoints(self):
+
         @self.server.route('/')
         def home():
             return render_template('tv.html', ip=server_ip)
         
+
         @self.server.route('/admin')
         def admin():
             return render_template('admin.html')
+
 
         @self.server.route('/login')
         def user_login():
             auth_url = self.spotify_auth.get_authorize_url()
             return redirect(auth_url)
+
 
         @self.server.route('/callback')
         def auth_callback():
@@ -72,50 +76,8 @@ class SpotifyServer:
             access_token = token_info['access_token']
             print("Authorization was successful!")
             return "Access token: " + access_token
-
-        @self.server.route('/currently_playing')
-        def current_song():
-            token_info = self.spotify_auth.get_cached_token()
-            if token_info:
-                spotify_client = spotipy.Spotify(auth=token_info['access_token'])
-                current_track = spotify_client.current_user_playing_track()
-                if current_track is not None:
-                    return current_track
-                else:
-                    return "No track is currently playing."
-            else:
-                return "User is not authorized."
-
-        @self.server.route('/user_playlists')
-        def user_playlists():
-            token_info = self.spotify_auth.get_cached_token()
-            if token_info:
-                spotify_client = spotipy.Spotify(auth=token_info['access_token'])
-                playlists = spotify_client.current_user_playlists()
-                return playlists
-            else:
-                return "User is not authorized."
-
-        @self.server.route('/playlist_tracks/<playlist_id>')
-        def playlist_tracks(playlist_id):
-            token_info = self.spotify_auth.get_cached_token()
-            if token_info:
-                spotify_client = spotipy.Spotify(auth=token_info['access_token'])
-                tracks = spotify_client.playlist_tracks(playlist_id)
-                return tracks
-            else:
-                return "User is not authorized."
-
-        @self.server.route('/search/<query>')
-        def search(query):
-            token_info = self.spotify_auth.get_cached_token()
-            if token_info:
-                spotify_client = spotipy.Spotify(auth=token_info['access_token'])
-                results = spotify_client.search(q=query, limit=20)
-                return results
-            else:
-                return "User is not authorized."
         
+
         ##############################################################################################
         ##############################################################################################
         ##############################################################################################
@@ -166,7 +128,6 @@ class SpotifyServer:
             else:
                 return "User is not authorized."
         
-
         
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
         
@@ -180,6 +141,7 @@ class SpotifyServer:
             redirect_uri="https://technikag.serveo.net/google/callback"
         )
         
+
         def login_is_required(function):
             @functools.wraps(function)
             def decorator(*args, **kwargs):
@@ -190,12 +152,14 @@ class SpotifyServer:
                     return function(*args, **kwargs)
             return decorator
         
+
         @self.server.route("/google/login")
         def login():
             authorization_url, state = flow.authorization_url()
             session["state"] = state
             return redirect(authorization_url)
         
+
         @self.server.route("/google/callback")
         def callback():
             try:
@@ -224,13 +188,15 @@ class SpotifyServer:
                 session["email"] = id_info.get("email")
                 return redirect(session.pop("next", "/"))
             except:
-                return redirect("/login")
+                return redirect("/google/login")
          
-        @self.server.route("/logout")
+
+        @self.server.route("/google/logout")
         def logout():
             session.clear()
             return redirect("/")
         
+
         @self.server.route('/administrate/set_price_list', methods=['POST'])
         @login_is_required
         def set_price_list():
