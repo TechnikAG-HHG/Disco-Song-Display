@@ -57,8 +57,8 @@ def read_admins(admins_file):
 def admin_is_required(function):
     @functools.wraps(function)
     def decorator(*args, **kwargs):
+        print(f"Current session: {session}")  # Debug print
         if "google_id" not in session:
-            print("session: " + str(session))
             print("Google ID not in session")
             session["next"] = request.url
             print("Google ID not in session and the next is: " + session["next"])
@@ -206,8 +206,6 @@ class SpotifyServer:
                 cached_session = cachecontrol.CacheControl(request_session)
                 token_request = google.auth.transport.requests.Request(session=cached_session)
                 id_info = id_token.verify_oauth2_token(
-        
-        
                     id_token=credentials._id_token,
                     request=token_request,
                     audience=GOOGLE_CLIENT_ID, 
@@ -215,13 +213,17 @@ class SpotifyServer:
                 )
         
                 session["google_id"] = id_info.get("sub")
+                print(f"Google ID set in session: {session['google_id']}")  # Debug print
+        
                 session["name"] = id_info.get("name")
                 session["email"] = id_info.get("email")
-
+        
                 print("NExt: " + session.get("next"))
                 return redirect(session.pop("next", "/loginsuccess"))
             except:
                 return redirect("/google/login")
+        
+
          
 
         @self.server.route("/google/logout")
