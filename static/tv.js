@@ -42,7 +42,7 @@ function calculateProgress() {
 }
 
 function updateData() {
-    fetch("http://192.168.178.56:5000/get_spotify").then((response) => {
+    fetch("https://fantastic-space-meme-qrqj6wj76ggfg4-5000.app.github.dev/get_spotify").then((response) => {
         response
             .json()
             .then((data) => {
@@ -57,6 +57,7 @@ function updateData() {
                 }
             })
             .catch((error) => {
+                document.body.innerHTML = "Error: " + error;
                 console.error("Error:", error);
             });
     });

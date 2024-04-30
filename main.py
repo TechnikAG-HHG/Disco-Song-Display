@@ -11,6 +11,19 @@ import cachecontrol
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
+import requests
+
+def get_server_ip():
+    response = requests.get('https://api.ipify.org?format=json')
+    if response.status_code == 200:
+        ip_data = response.json()
+        return ip_data['ip']
+    else:
+        return 'Failed to retrieve server IP'
+    
+global server_ip
+server_ip = get_server_ip()
+
 
 
 class SpotifyServer:
@@ -30,15 +43,18 @@ class SpotifyServer:
         self.start_server()
     
 
+        
+    # Modify the start_server method
     def start_server(self):
         self.server.run(debug=True, threaded=True, port=5000, host="0.0.0.0", use_reloader=True)
-        webbrowser.open_new('http://127.0.0.1:5000/login')
-
+        server_ip = get_server_ip()
+        print(f"Server IP: {server_ip}")
+        webbrowser.open_new(f'http://{server_ip}:5000/login')
 
     def init_endpoints(self):
         @self.server.route('/')
         def home():
-            return render_template('tv.html')
+            return render_template('tv.html', ip=server_ip)
         
         @self.server.route('/admin')
         def admin():
@@ -155,13 +171,13 @@ class SpotifyServer:
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
         
         GOOGLE_CLIENT_ID = "450306821477-t53clamc7s8u20adedj2fqhv0904aa8t.apps.googleusercontent.com"
-        client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
+        client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "Flask Server/client_secret.json")
         admins_file = os.path.join(pathlib.Path(__file__).parent, "admins.json")
         
         flow = Flow.from_client_secrets_file(
             client_secrets_file=client_secrets_file,
             scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-            redirect_uri="https://technikag.serveo.net/callback"
+            redirect_uri="https://technikag.serveo.net/google/callback"
         )
         
         def login_is_required(function):
@@ -169,24 +185,24 @@ class SpotifyServer:
             def decorator(*args, **kwargs):
                 if "google_id" not in session:
                     session["next"] = request.url
-                    return redirect("/login")
+                    return redirect("/google/login")
                 else:
                     return function(*args, **kwargs)
             return decorator
         
-        @self.server.route("/login")
+        @self.server.route("/google/login")
         def login():
             authorization_url, state = flow.authorization_url()
             session["state"] = state
             return redirect(authorization_url)
         
-        @self.server.route("/callback")
+        @self.server.route("/google/callback")
         def callback():
             try:
                 global session
                 state = session.pop("state", None)  # Use pop to get and remove state from session
                 if state is None or state != request.args.get("state"):
-                    return redirect("/login")
+                    return redirect("/google/login")
         
                 flow.fetch_token(authorization_response=request.url)
         
@@ -194,9 +210,9 @@ class SpotifyServer:
                 request_session = requests.session()
                 cached_session = cachecontrol.CacheControl(request_session)
                 token_request = google.auth.transport.requests.Request(session=cached_session)
-        
-        
                 id_info = id_token.verify_oauth2_token(
+        
+        
                     id_token=credentials._id_token,
                     request=token_request,
                     audience=GOOGLE_CLIENT_ID, 
