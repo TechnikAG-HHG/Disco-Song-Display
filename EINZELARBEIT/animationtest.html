@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            #particles {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="particles"></div>
+        <div>This is some content displayed below the canvas.</div>
+        <script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tsparticles"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tsparticles/preset-fire@3/tsparticles.preset.fire.bundle.min.js"></script>
+        <script>
+            // Create a new instance of the ConfettiGenerator
+            const confetti = new ConfettiGenerator({
+                target: "confetti-canvas",
+            });
+
+            // Configure the confetti animation
+            confetti.render();
+
+            // Create a new instance of tsParticles
+            tsParticles.load("particles", {
+                particles: {
+                    number: {
+                        value: 80, // Decrease the number of particles
+                    },
+                    size: {
+                        value: 3, // Decrease the size of the particles
+                    },
+                    color: {
+                        value: "#ff0000", // Change the color of the particles
+                    },
+                    move: {
+                        speed: 1, // Decrease the speed of the particles
+                    },
+                },
+                interactivity: {
+                    events: {
+                        onhover: {
+                            enable: true,
+                            mode: "repulse", // Change the behavior when hovering over the particles
+                        },
+                    },
+                },
+            });
+        </script>
+    </body>
+</html>

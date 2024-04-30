@@ -21,6 +21,7 @@
         <title>TV Website</title>
     </head>
     <body>
+        <canvas id="confetti-canvas"></canvas>
         <div class="main-container">
             <div class="pricelist text-center">
                 <h1 id="heading">Getränke- und Speiseliste</h1>
@@ -83,6 +84,7 @@
             integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
             crossorigin="anonymous"
         ></script>
+        <script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
         
         <script src="{{ url_for('static', filename='tv.js') }}"></script>
     </body>

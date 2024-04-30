@@ -19,11 +19,11 @@ $(document).ready(function () {
                         '<input type="text" name="entryName" placeholder="Product Name" value="' +
                         entry.name +
                         '">' +
-                        '<input type="text" name="entryPrice" placeholder="Product Price" value="' +
-                        entry.price +
-                        '">' +
                         '<input type="text" name="entrySold" placeholder="Product Amount" value="' +
                         entry.amount +
+                        '">' +
+                        '<input type="text" name="entryPrice" placeholder="Product Price" value="' +
+                        entry.price +
                         '">' +
                         '<button type="button" class="removeEntry">Remove Product</button>' +
                         "</div>";
@@ -44,6 +44,15 @@ $(document).ready(function () {
             console.error("Error:", error);
         });
 
+    fetch("/get_show_spotify")
+        .then((response) => response.json())
+        .then((data) => {
+            $("#enable-spotify").prop("checked", data.enable);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+
     $("#addCategory").click(function () {
         var categoryHTML =
             '<div class="category">' +
@@ -51,8 +60,8 @@ $(document).ready(function () {
             '<div class="entries">' +
             '<div class="entry">' +
             '<input type="text" name="entryName" placeholder="Product Name">' +
+            '<input type="text" name="entrySold" placeholder="Product amount">' +
             '<input type="text" name="entryPrice" placeholder="Product Price">' +
-            '<input type="text" name="entrySold" placeholder="Product amount">' + // New input for specifying sold amount
             '<button type="button" class="removeEntry">Remove Product</button>' +
             "</div>" +
             "</div>" +
@@ -69,8 +78,8 @@ $(document).ready(function () {
         var entryHTML =
             '<div class="entry">' +
             '<input type="text" name="entryName" placeholder="Product Name">' +
+            '<input type="text" name="entrySold" placeholder="Product Amount">' +
             '<input type="text" name="entryPrice" placeholder="Product Price">' +
-            '<input type="text" name="entrySold" placeholder="Product Amount">' + // New input for specifying sold amount
             '<button type="button" class="removeEntry">Remove Product</button>' +
             "</div>";
 
@@ -83,6 +92,29 @@ $(document).ready(function () {
 
     $(document).on("click", ".removeEntry", function () {
         $(this).parent(".entry").remove();
+    });
+
+    $("#enable-spotify").change(function () {
+        var showSpotify = this.checked; // true if checked, false otherwise
+
+        // Create the JSON string
+        var json = {
+            enable: showSpotify,
+        };
+
+        // Send the JSON string to the server endpoint
+        fetch("/administrate/set_show_spotify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(json),
+        })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+            .catch((error) => {
+                console.error("Error:", error);
+            });
     });
 
     $("#submit-button").click(function (e) {

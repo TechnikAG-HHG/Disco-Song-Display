@@ -12,6 +12,7 @@ body {
     margin: 0 0 2em 0;
     width: 100%;
     overflow-y: scroll; /* Enable vertical scrolling */
+    padding-bottom: 10vh !important;
 }
 
 .button-bottom {
@@ -21,7 +22,8 @@ body {
     align-items: center;
     background-color: #1a1a1a;
     position: fixed;
-    bottom: 5%;
+    bottom: 0;
+    padding-bottom: 5vh !important;
 }
 
 .button-bottom-style {

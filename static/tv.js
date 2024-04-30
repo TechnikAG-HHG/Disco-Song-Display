@@ -1,4 +1,5 @@
 var oldProgress = 0;
+var spotifyEnabled = true;
 
 function setBackgroundCoverImage(url) {
     let currentSongCol = document.getElementById("currentSongCol");
@@ -129,6 +130,18 @@ function turnSpotifyOn() {
     updateData();
 }
 
+function renderConfetti() {
+    // Create a new instance of the ConfettiGenerator
+    const confetti = new ConfettiGenerator({
+        target: "confetti-canvas",
+        clock: 10,
+        max: 150,
+    });
+
+    // Configure the confetti animation
+    confetti.render();
+}
+
 function updateData() {
     try {
         fetch("/get_spotify").then((response) => {
@@ -164,10 +177,35 @@ function updateData() {
                     console.error("Error:", error);
                 });
         });
+
+        fetch("/get_show_spotify").then((response) => {
+            response
+                .json()
+                .then((data) => {
+                    console.log(data);
+                    if (data.enable == true) {
+                        if (!spotifyEnabled) {
+                            turnSpotifyOn();
+                            spotifyEnabled = true;
+                        }
+                    } else {
+                        if (spotifyEnabled) {
+                            turnSpotifyOff();
+                            spotifyEnabled = false;
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+        });
     } catch (error) {
         document.body.innerHTML = "Error: " + error;
     }
 }
+
+renderConfetti();
+window.addEventListener("resize", renderConfetti);
 
 updateData();
 setInterval(updateData, 5000);
