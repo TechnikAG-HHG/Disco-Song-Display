@@ -132,6 +132,7 @@ class SpotifyServer:
         
 
         @self.server.route('/administrate')
+        @self.server.route('/administrate/')
         @admin_is_required
         def admin():
             print("Admin page requested")
@@ -176,7 +177,7 @@ class SpotifyServer:
                 # print(current_track_info_json)
 
                 current_track_name = current_track_info_json['name']
-                current_track_artist = current_track_info_json['artists'][0]['name']
+                current_track_artist = ", ".join([artist['name'] for artist in current_track_info_json['artists']])
                 #current_track_album = current_track_info_json['album']['name']
                 current_track_image = current_track_info_json['album']['images'][0]['url']
                 #current_track_url = current_track_info_json['external_urls']['spotify']

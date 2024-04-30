@@ -142,6 +142,19 @@ function renderConfetti() {
     confetti.render();
 }
 
+function checkForScroll() {
+    var pricelist = document.getElementsByClassName("pricelist")[0];
+    var canvas = document.getElementById("confetti-canvas");
+
+    console.log("Visible height:", canvas.scrollHeight);
+    console.log("Complete height:", pricelist.clientHeight);
+    if (canvas.scrollHeight < pricelist.clientHeight) {
+        var scrollAmount = pricelist.scrollHeight - canvas.scrollHeight;
+        pricelist.style.setProperty("--scroll-amount", scrollAmount + "px");
+        pricelist.classList.add("scroll");
+    }
+}
+
 function updateData() {
     try {
         fetch("/get_spotify").then((response) => {
@@ -163,8 +176,6 @@ function updateData() {
                     console.error("Error:", error);
                 });
         });
-
-        scrollText();
 
         fetch("/get_price_list").then((response) => {
             response
@@ -203,6 +214,8 @@ function updateData() {
         document.body.innerHTML = "Error: " + error;
     }
 }
+
+setTimeout(checkForScroll, 1000);
 
 renderConfetti();
 window.addEventListener("resize", renderConfetti);

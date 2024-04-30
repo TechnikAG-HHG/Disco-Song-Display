@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            .marquee {
+                width: 20%;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .scroll {
+                animation: marquee 10s linear infinite;
+            }
+
+            @keyframes marquee {
+                0%,
+                20%,
+                80%,
+                100% {
+                    transform: translateX(0%);
+                }
+                40%,
+                60% {
+                    transform: translateX(calc(-1 * var(--scroll-amount)));
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="marquee" class="marquee">
+            This is some content displayed below
+            theadsdasdasdasöojldhuioalshduiolashdasdasdasdasodhauslduioahsdhasuidhashduilhasuildh
+        </div>
+
+        <script>
+            var marquee = document.getElementById("marquee");
+            if (marquee.scrollWidth > marquee.offsetWidth) {
+                var scrollAmount = marquee.scrollWidth - marquee.offsetWidth;
+                marquee.style.setProperty(
+                    "--scroll-amount",
+                    scrollAmount + "px"
+                );
+                marquee.classList.add("scroll");
+            }
+        </script>
+    </body>
+</html>

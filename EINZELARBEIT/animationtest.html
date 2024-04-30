@@ -16,20 +16,12 @@
         </style>
     </head>
     <body>
+        <canvas id="confetti-canvas"></canvas>
         <div id="particles"></div>
         <div>This is some content displayed below the canvas.</div>
         <script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/tsparticles"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tsparticles/preset-fire@3/tsparticles.preset.fire.bundle.min.js"></script>
         <script>
-            // Create a new instance of the ConfettiGenerator
-            const confetti = new ConfettiGenerator({
-                target: "confetti-canvas",
-            });
-
-            // Configure the confetti animation
-            confetti.render();
-
             // Create a new instance of tsParticles
             tsParticles.load("particles", {
                 particles: {
