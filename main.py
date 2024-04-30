@@ -37,6 +37,7 @@ def login_is_required(function):
     def decorator(*args, **kwargs):
         if "google_id" not in session:
             session["next"] = request.url
+            print("Google ID not in session and the next is: " + session["next"])
             return redirect("/google/login")
         else:
             return function(*args, **kwargs)
