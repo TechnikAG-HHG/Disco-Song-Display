@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, session
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
@@ -11,7 +11,7 @@ import cachecontrol
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
-from flask import Flask, request, redirect, session
+
 
 class SpotifyServer:
     def __init__(self, StartServer=False):
