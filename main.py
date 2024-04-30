@@ -49,7 +49,7 @@ def login_is_required(function):
     def decorator(*args, **kwargs):
         if "google_id" not in session:
             session["next"] = request.url
-            print("Google ID not in session and the next is: " + session["next"])
+            # print("Google ID not in session and the next is: " + session["next"])
             return redirect("/google/login")
         else:
             return function(*args, **kwargs)
@@ -70,20 +70,20 @@ def read_admins(admins_file):
 def admin_is_required(function):
     @functools.wraps(function)
     def decorator(*args, **kwargs):
-        print(f"Current session: {session}")  # Debug print
+        # print(f"Current session: {session}")  # Debug print
         if "google_id" not in session:
-            print("Google ID not in session")
+            # print("Google ID not in session")
             session["next"] = request.url
-            print("Google ID not in session and the next is: " + session["next"])
+            # print("Google ID not in session and the next is: " + session["next"])
             return redirect("/google/login")
         else:
             admins = read_admins(admins_file)
-            print(admins)
+            # print(admins)
             if session["google_id"] in admins.values():  # Change this line
-                print("User is an admin.")
+                # print("User is an admin.")
                 return function(*args, **kwargs)
             else:
-                print("User is not an admin.")
+                # print("User is not an admin.")
                 return make_response("You are not an admin.", 403)
     return decorator
 
@@ -134,23 +134,26 @@ class SpotifyServer:
         @self.server.route('/administrate')
         @admin_is_required
         def admin():
+            print("Admin page requested")
             return render_template('admin.html')
 
 
-        @self.server.route('/login')
+        @self.server.route('/administrate/login')
         @admin_is_required
         def user_login():
+            print("Spotipy login requested")
             auth_url = self.spotify_auth.get_authorize_url()
             return redirect(url_for('auth_callback'))
 
 
-        @self.server.route('/callback')
+        @self.server.route('/administrate/callback')
         @admin_is_required
         def auth_callback():
+            print("Got Spotify callback")
             auth_code = request.args.get('code')
             token_info = self.spotify_auth.get_access_token(auth_code)
             access_token = token_info['access_token']
-            print("Authorization was successful!")
+            # print("Authorization was successful!")
             return "Access token: " + access_token
         
 
@@ -170,7 +173,7 @@ class SpotifyServer:
 
                 # look at the currently playing song
                 current_track_info_json = queue['currently_playing']
-                print(current_track_info_json)
+                # print(current_track_info_json)
 
                 current_track_name = current_track_info_json['name']
                 current_track_artist = current_track_info_json['artists'][0]['name']
@@ -207,6 +210,7 @@ class SpotifyServer:
         
         @self.server.route("/google/login")
         def login():
+            print("Login requested")
             authorization_url, state = flow.authorization_url()
             session["state"] = state
             return redirect(authorization_url)
@@ -215,9 +219,10 @@ class SpotifyServer:
         @self.server.route("/google/callback")
         def callback():
             try:
+                print("Got Google callback")
                 global session
                 state = session.pop("state", None)  # Use pop to get and remove state from session
-                print(f"State: {state}")  # Debug print
+                # print(f"State: {state}")  # Debug print
                 if state is None or state != request.args.get("state"):
                     return redirect("/google/login")
         
@@ -235,12 +240,12 @@ class SpotifyServer:
                 )
         
                 session["google_id"] = id_info.get("sub")
-                print(f"Google ID set in session: {session['google_id']}")  # Debug print
+                # print(f"Google ID set in session: {session['google_id']}")  # Debug print
         
                 session["name"] = id_info.get("name")
                 session["email"] = id_info.get("email")
         
-                print("NExt: " + session.get("next"))
+                # print("NExt: " + session.get("next"))
                 return redirect(session.pop("next", "/loginsuccess"))
             except:
                 return redirect("/google/login")
@@ -270,7 +275,8 @@ class SpotifyServer:
             data = request.get_json()
             with open('Flask Server/savePriceList.json', 'w') as json_file:
                 json.dump(data, json_file)
-        
+
+            print("Price list has been set to: " + str(data))
             return "Price list has been updated."
         
 
@@ -288,7 +294,8 @@ class SpotifyServer:
             data = request.get_json()
             with open('Flask Server/showSpotify.json', 'w') as json_file:
                 json.dump(data, json_file)
-        
+
+            print("Show Spotify has been set to: " + str(data))
             return "Show Spotify has been updated."
         
 
@@ -319,6 +326,7 @@ if __name__ == '__main__':
     start_server_and_ssh = True
 
     if start_server_and_ssh:
+        print("Starting Serveo SSH connection...")
         subprocess.Popen(["python", "serveo_shh_connect.py"])
     
     spotify_server = SpotifyServer(StartServer=True)
