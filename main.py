@@ -61,6 +61,7 @@ def admin_is_required(function):
             print("session: " + str(session))
             print("Google ID not in session")
             session["next"] = request.url
+            print("Google ID not in session and the next is: " + session["next"])
             return redirect("/google/login")
         else:
             admins = read_admins(admins_file)
