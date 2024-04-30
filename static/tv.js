@@ -33,27 +33,36 @@ function setSongData(number, title, artist) {
 function scrollText() {}
 
 function setProgress(progress, duration) {
-    var progressBar = document.getElementById("progressbar");
+    try {
+        var progressBar = document.getElementById("progressbar");
 
-    if (progressBar) {
-        progressBar.setAttribute("max", duration);
-        progressBar.setAttribute("value", progress);
-        oldProgress = progress;
+        if (progressBar) {
+            progressBar.setAttribute("max", duration);
+            progressBar.setAttribute("value", progress);
+            oldProgress = progress;
+        }
+    } catch (error) {
+        document.body.innerHTML = "Error: " + error;
     }
 }
 
 function calculateProgress() {
-    var progressBar = document.getElementById("progressbar");
+    try {
+        var progressBar = document.getElementById("progressbar");
 
-    if (progressBar) {
-        var newValue = oldProgress + 10;
-        progressBar.setAttribute("value", newValue);
-        oldProgress = newValue;
+        if (progressBar) {
+            var newValue = oldProgress + 30;
+            progressBar.setAttribute("value", newValue);
+            oldProgress = newValue;
+        }
+    } catch (error) {
+        document.body.innerHTML = "Error: " + error;
     }
 }
 
 function setPriceList(data) {
     var table = document.getElementById("priceList");
+    table.innerHTML = ""; // Clear the table first
 
     for (var i = 0; i < data.categories.length; i++) {
         var category = data.categories[i];
@@ -121,74 +130,48 @@ function turnSpotifyOn() {
 }
 
 function updateData() {
-    fetch("https://technikag.serveo.net/get_spotify").then((response) => {
-        response
-            .json()
-            .then((data) => {
-                console.log(data);
-                for (var i = 0; i < 3; i++) {
-                    console.log(data[i]);
-                    if (i == 0) {
-                        setBackgroundCoverImage(data[i].image);
-                        setProgress(data[i].progress, data[i].duration);
+    try {
+        fetch("/get_spotify").then((response) => {
+            response
+                .json()
+                .then((data) => {
+                    console.log(data);
+                    for (var i = 0; i < 3; i++) {
+                        console.log(data[i]);
+                        if (i == 0) {
+                            setBackgroundCoverImage(data[i].image);
+                            setProgress(data[i].progress, data[i].duration);
+                        }
+                        setSongData(i, data[i].title, data[i].artists);
                     }
-                    setSongData(i, data[i].title, data[i].artists);
-                }
-            })
-            .catch((error) => {
-                document.body.innerHTML = "Error: " + error;
-                console.error("Error:", error);
-            });
-    });
+                })
+                .catch((error) => {
+                    document.body.innerHTML = "Error: " + error;
+                    console.error("Error:", error);
+                });
+        });
 
-    scrollText();
+        scrollText();
 
-    fetch("http://192.168.178.56/get_price_list").then((response) => {
-        response
-            .json()
-            .then((data) => {
-                console.log(data);
-                //setPriceList(data);
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    });
+        fetch("/get_price_list").then((response) => {
+            response
+                .json()
+                .then((data) => {
+                    console.log(data);
+                    setPriceList(data);
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+        });
+    } catch (error) {
+        document.body.innerHTML = "Error: " + error;
+    }
 }
 
 updateData();
 setInterval(updateData, 5000);
-setInterval(calculateProgress, 10);
+setInterval(calculateProgress, 30);
 
-setPriceList({
-    categories: [
-        {
-            name: "Essen",
-            entries: [
-                {
-                    name: "Schnitzel",
-                    amount: "1 Stück",
-                    price: "20€",
-                },
-                {
-                    name: "Thunfish",
-                    amount: "1 Dose",
-                    price: "10€",
-                },
-            ],
-        },
-        {
-            name: "Getränke",
-            entries: [
-                {
-                    name: "Fanta",
-                    amount: "0.5l",
-                    price: "0.99€",
-                },
-            ],
-        },
-    ],
-});
-
-turnSpotifyOff();
-setTimeout(turnSpotifyOn, 10000);
+// turnSpotifyOff();
+// setTimeout(turnSpotifyOn, 10000);
