@@ -15,7 +15,7 @@ import requests
 import subprocess
 
 # List of JSON files to check and create if not exist
-json_files = ['Flask Server/savePriceList.json', 'Flask Server/showSpotify.json', 'Flask Server/data.json']
+json_files = ['Flask Server/savePriceList.json', 'Flask Server/showSpotify.json', 'Flask Server/data.json', 'Flask Server/admins.json']
 
 for json_file in json_files:
     if not os.path.exists(json_file):
@@ -65,6 +65,7 @@ def read_admins(admins_file):
                 return []
     except FileNotFoundError:
         return []
+
 
 def admin_is_required(function):
     @functools.wraps(function)
@@ -116,6 +117,9 @@ class SpotifyServer:
     def start_server(self):
         self.server.run(debug=True, threaded=True, port=5000, host="0.0.0.0", use_reloader=True)
         #server_ip = get_server_ip()
+
+        SERVER_IP = request.url_root
+
         print(f"Server IP: {SERVER_IP}")
         webbrowser.open_new(f'{SERVER_IP}/login')
 
@@ -241,7 +245,6 @@ class SpotifyServer:
             except:
                 return redirect("/google/login")
 
-         
 
         @self.server.route("/google/logout")
         def logout():
@@ -288,6 +291,7 @@ class SpotifyServer:
         
             return "Show Spotify has been updated."
         
+
         @self.server.route('/get_show_spotify', methods=['GET'])
         def get_show_spotify():
             with open('Flask Server/showSpotify.json') as json_file:
