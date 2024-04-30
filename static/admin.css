@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap%27");
 
 * {
-    margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box;
 }
@@ -28,4 +27,27 @@ body {
 .button-bottom-style {
     width: 30%;
     height: 7vh;
+}
+
+.category {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 4vh;
+}
+
+.category input {
+    width: 40%;
+    align-self: center;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.buttons button {
+    width: 30%;
+    height: 4vh;
 }

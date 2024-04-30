@@ -39,6 +39,10 @@ class SpotifyServer:
         @self.server.route('/')
         def home():
             return render_template('tv.html')
+        
+        @self.server.route('/admin')
+        def admin():
+            return render_template('admin.html')
 
         @self.server.route('/login')
         def user_login():
@@ -170,13 +174,13 @@ class SpotifyServer:
                     return function(*args, **kwargs)
             return decorator
         
-        @app.route("/login")
+        @self.server.route("/login")
         def login():
             authorization_url, state = flow.authorization_url()
             session["state"] = state
             return redirect(authorization_url)
         
-        @app.route("/callback")
+        @self.server.route("/callback")
         def callback():
             try:
                 global session
@@ -206,12 +210,12 @@ class SpotifyServer:
             except:
                 return redirect("/login")
          
-        @app.route("/logout")
+        @self.server.route("/logout")
         def logout():
             session.clear()
             return redirect("/")
         
-        @app.route('/administrate/set_price_list', methods=['POST'])
+        @self.server.route('/administrate/set_price_list', methods=['POST'])
         @login_is_required
         def set_price_list():
             # use the sent data to write savePriceList.json

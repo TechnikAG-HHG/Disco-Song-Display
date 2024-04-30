@@ -10,8 +10,10 @@ $(document).ready(function () {
             '<button type="button" class="removeEntry">Remove Entry</button>' +
             "</div>" +
             "</div>" +
+            "<div class='buttons'>" +
             '<button type="button" class="addEntry">Add Entry</button>' +
             '<button type="button" class="removeCategory">Remove Category</button>' +
+            "</div>" +
             "</div>";
 
         $("#categories").append(categoryHTML);
