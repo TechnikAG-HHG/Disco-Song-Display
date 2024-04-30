@@ -5,13 +5,14 @@ $(document).ready(function () {
             '<input type="text" name="categoryName" placeholder="Category Name">' +
             '<div class="entries">' +
             '<div class="entry">' +
-            '<input type="text" name="entryName" placeholder="Entry Name">' +
-            '<input type="text" name="entryPrice" placeholder="Entry Price">' +
-            '<button type="button" class="removeEntry">Remove Entry</button>' +
+            '<input type="text" name="entryName" placeholder="Product Name">' +
+            '<input type="text" name="entryPrice" placeholder="Product Price">' +
+            '<input type="text" name="entrySold" placeholder="Product amount">' + // New input for specifying sold amount
+            '<button type="button" class="removeEntry">Remove Product</button>' +
             "</div>" +
             "</div>" +
             "<div class='buttons'>" +
-            '<button type="button" class="addEntry">Add Entry</button>' +
+            '<button type="button" class="addEntry">Add Product</button>' +
             '<button type="button" class="removeCategory">Remove Category</button>' +
             "</div>" +
             "</div>";
@@ -22,23 +23,24 @@ $(document).ready(function () {
     $(document).on("click", ".addEntry", function () {
         var entryHTML =
             '<div class="entry">' +
-            '<input type="text" name="entryName" placeholder="Entry Name">' +
-            '<input type="text" name="entryPrice" placeholder="Entry Price">' +
-            '<button type="button" class="removeEntry">Remove Entry</button>' +
+            '<input type="text" name="entryName" placeholder="Product Name">' +
+            '<input type="text" name="entryPrice" placeholder="Product Price">' +
+            '<input type="text" name="entrySold" placeholder="Product Amount">' + // New input for specifying sold amount
+            '<button type="button" class="removeEntry">Remove Product</button>' +
             "</div>";
 
-        $(this).siblings(".entries").append(entryHTML);
+        $(this).parent().siblings(".entries").append(entryHTML);
     });
 
     $(document).on("click", ".removeCategory", function () {
-        $(this).parent(".category").remove();
+        $(this).parent().parent(".category").remove();
     });
 
     $(document).on("click", ".removeEntry", function () {
         $(this).parent(".entry").remove();
     });
 
-    $("#pricelistForm").submit(function (e) {
+    $("#submit-button").click(function (e) {
         e.preventDefault();
 
         // Create the JSON string
