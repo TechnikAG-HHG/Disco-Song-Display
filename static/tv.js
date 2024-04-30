@@ -1,8 +1,8 @@
 var oldProgress = 0;
 
 function setBackgroundCoverImage(url) {
-    let currentSongCol = document.getElementById("currentSongCol");
-    let coverImage = document.getElementById("album-art");
+    let currentSongCol = document.getElementById('currentSongCol');
+    let coverImage = document.getElementById('album-art');
 
     currentSongCol.style.background = "url('" + url + "')";
     coverImage.src = url;
@@ -10,14 +10,14 @@ function setBackgroundCoverImage(url) {
 
 function setSongData(number, title, artist) {
     if (number == 0) {
-        var songName = document.getElementById("songname");
-        var songArtist = document.getElementById("song-artists");
+        var songName = document.getElementById('songname');
+        var songArtist = document.getElementById('song-artists');
     } else {
         var songName = document.getElementById(
-            "upcoming" + number + "songname"
+            'upcoming' + number + 'songname'
         );
         var songArtist = document.getElementById(
-            "upcoming" + number + "artists"
+            'upcoming' + number + 'artists'
         );
     }
 
@@ -26,23 +26,23 @@ function setSongData(number, title, artist) {
 }
 
 function setProgress(progress, duration) {
-    var progressBar = document.getElementById("progressbar");
+    var progressBar = document.getElementById('progressbar');
 
-    progressBar.setAttribute("max", duration);
-    progressBar.setAttribute("value", progress);
+    progressBar.setAttribute('max', duration);
+    progressBar.setAttribute('value', progress);
     oldProgress = progress;
 }
 
 function calculateProgress() {
-    var progressBar = document.getElementById("progressbar");
+    var progressBar = document.getElementById('progressbar');
 
     var newValue = oldProgress + 10;
-    progressBar.setAttribute("value", newValue);
+    progressBar.setAttribute('value', newValue);
     oldProgress = newValue;
 }
 
 function updateData() {
-    fetch("https://fantastic-space-meme-qrqj6wj76ggfg4-5000.app.github.dev/get_spotify").then((response) => {
+    fetch('http://127.0.0.1/get_spotify').then((response) => {
         response
             .json()
             .then((data) => {
@@ -57,8 +57,8 @@ function updateData() {
                 }
             })
             .catch((error) => {
-                document.body.innerHTML = "Error: " + error;
-                console.error("Error:", error);
+                document.body.innerHTML = 'Error: ' + error;
+                console.error('Error:', error);
             });
     });
 }

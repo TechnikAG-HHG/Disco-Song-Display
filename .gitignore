@@ -5,3 +5,6 @@ Flask Server/data.json
 Flask Server/savePriceList.json
 client_secret.json
 .json
+key
+Flask Server/admins.json
+.vscode/settings.json

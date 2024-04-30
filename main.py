@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session, make_response
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
@@ -12,18 +12,61 @@ import google.auth.transport.requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
+import subprocess
 
-def get_server_ip():
-    response = requests.get('https://api.ipify.org?format=json')
-    if response.status_code == 200:
-        ip_data = response.json()
-        return ip_data['ip']
-    else:
-        return 'Failed to retrieve server IP'
     
 global server_ip
-server_ip = get_server_ip()
+SERVER_IP = "https://technikag.serveo.net"
 
+
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+GOOGLE_CLIENT_ID = "450306821477-t53clamc7s8u20adedj2fqhv0904aa8t.apps.googleusercontent.com"
+client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "Flask Server/client_secret.json")
+admins_file = os.path.join(pathlib.Path(__file__).parent, "Flask Server/admins.json")
+
+flow = Flow.from_client_secrets_file(
+    client_secrets_file=client_secrets_file,
+    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+    redirect_uri="https://technikag.serveo.net/google/callback"
+)
+
+
+def login_is_required(function):
+    @functools.wraps(function)
+    def decorator(*args, **kwargs):
+        if "google_id" not in session:
+            session["next"] = request.url
+            return redirect("/google/login")
+        else:
+            return function(*args, **kwargs)
+    return decorator
+
+
+def read_admins(admins_file):
+    try:
+        with open(admins_file, 'r') as json_file:
+            try:
+                return json.load(json_file)
+            except json.JSONDecodeError:
+                return []
+    except FileNotFoundError:
+        return []
+
+def admin_is_required(function):
+    @functools.wraps(function)
+    def decorator(*args, **kwargs):
+        if "google_id" not in session:
+            session["next"] = request.url
+            return redirect("/google/login")
+        else:
+            admins = read_admins(admins_file)
+            print(admins)
+            if session["google_id"] in admins.values():  # Change this line
+                return function(*args, **kwargs)
+            else:
+                return make_response("You are not an admin.", 403)
+    return decorator
 
 
 class SpotifyServer:
@@ -38,6 +81,9 @@ class SpotifyServer:
                           redirect_uri=spotify_data['redirect_uri'],
                           scope=spotify_data['spotify_scopes'])
         
+        #set the secret key. keep this really secret:
+        self.server.secret_key = os.urandom(24)
+        
         # Start the server
         self.init_endpoints()
         self.start_server()
@@ -46,30 +92,33 @@ class SpotifyServer:
     # Modify the start_server method
     def start_server(self):
         self.server.run(debug=True, threaded=True, port=5000, host="0.0.0.0", use_reloader=True)
-        server_ip = get_server_ip()
-        print(f"Server IP: {server_ip}")
-        webbrowser.open_new(f'http://{server_ip}:5000/login')
+        #server_ip = get_server_ip()
+        print(f"Server IP: {SERVER_IP}")
+        webbrowser.open_new(f'{SERVER_IP}/login')
 
 
     def init_endpoints(self):
 
         @self.server.route('/')
         def home():
-            return render_template('tv.html', ip=server_ip)
+            return render_template('tv.html', ip=SERVER_IP)
         
 
-        @self.server.route('/admin')
+        @self.server.route('/administrate')
+        @admin_is_required
         def admin():
             return render_template('admin.html')
 
 
         @self.server.route('/login')
+        @admin_is_required
         def user_login():
             auth_url = self.spotify_auth.get_authorize_url()
             return redirect(auth_url)
 
 
         @self.server.route('/callback')
+        @admin_is_required
         def auth_callback():
             auth_code = request.args.get('code')
             token_info = self.spotify_auth.get_access_token(auth_code)
@@ -129,30 +178,6 @@ class SpotifyServer:
                 return "User is not authorized."
         
         
-        os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-        
-        GOOGLE_CLIENT_ID = "450306821477-t53clamc7s8u20adedj2fqhv0904aa8t.apps.googleusercontent.com"
-        client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "Flask Server/client_secret.json")
-        admins_file = os.path.join(pathlib.Path(__file__).parent, "admins.json")
-        
-        flow = Flow.from_client_secrets_file(
-            client_secrets_file=client_secrets_file,
-            scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-            redirect_uri="https://technikag.serveo.net/google/callback"
-        )
-        
-
-        def login_is_required(function):
-            @functools.wraps(function)
-            def decorator(*args, **kwargs):
-                if "google_id" not in session:
-                    session["next"] = request.url
-                    return redirect("/google/login")
-                else:
-                    return function(*args, **kwargs)
-            return decorator
-        
-
         @self.server.route("/google/login")
         def login():
             authorization_url, state = flow.authorization_url()
@@ -186,7 +211,7 @@ class SpotifyServer:
                 session["google_id"] = id_info.get("sub")
                 session["name"] = id_info.get("name")
                 session["email"] = id_info.get("email")
-                return redirect(session.pop("next", "/"))
+                return redirect(session.pop("next", "/loginsuccess"))
             except:
                 return redirect("/google/login")
          
@@ -197,8 +222,15 @@ class SpotifyServer:
             return redirect("/")
         
 
-        @self.server.route('/administrate/set_price_list', methods=['POST'])
+        @self.server.route("/loginsuccess")
         @login_is_required
+        def loginsuccess():
+            #return the loginSuccsessful page
+            return render_template('loginSuccessful.html')
+        
+
+        @self.server.route('/administrate/set_price_list', methods=['POST'])
+        @admin_is_required
         def set_price_list():
             # use the sent data to write savePriceList.json
             data = request.get_json()
@@ -206,7 +238,23 @@ class SpotifyServer:
                 json.dump(data, json_file)
         
             return "Price list has been updated."
+        
+
+        @self.server.route('/administrate/get_user_data', methods=['GET'])
+        @login_is_required
+        def print_user_data():
+            print("USER DATA PRINT REQUESTED")
+            print("User Name: " + session["name"])
+            print("User Email: " + session["email"])
+            print("User Google ID: " + session["google_id"])
+            return "User data has been printed in the console."
             
         
 if __name__ == '__main__':
+    
+    start_server_and_ssh = True
+
+    if start_server_and_ssh:
+        subprocess.Popen(["python", "serveo_shh_connect.py"])
+    
     spotify_server = SpotifyServer(StartServer=True)
