@@ -42,7 +42,7 @@ function calculateProgress() {
 }
 
 function updateData() {
-    fetch('http://127.0.0.1/get_spotify').then((response) => {
+    fetch('https://technikag.serveo.net/get_spotify').then((response) => {
         response
             .json()
             .then((data) => {

@@ -57,14 +57,17 @@ def admin_is_required(function):
     @functools.wraps(function)
     def decorator(*args, **kwargs):
         if "google_id" not in session:
+            print("Google ID not in session")
             session["next"] = request.url
             return redirect("/google/login")
         else:
             admins = read_admins(admins_file)
             print(admins)
             if session["google_id"] in admins.values():  # Change this line
+                print("User is an admin.")
                 return function(*args, **kwargs)
             else:
+                print("User is not an admin.")
                 return make_response("You are not an admin.", 403)
     return decorator
 
@@ -239,7 +242,7 @@ class SpotifyServer:
         
             return "Price list has been updated."
         
-        
+
         @self.server.route('/get_price_list', methods=['GET'])
         def get_price_list():
             with open('Flask Server/savePriceList.json') as json_file:
