@@ -14,6 +14,18 @@ from google_auth_oauthlib.flow import Flow
 import requests
 import subprocess
 
+# List of JSON files to check and create if not exist
+json_files = ['Flask Server/savePriceList.json', 'Flask Server/showSpotify.json', 'Flask Server/data.json']
+
+for json_file in json_files:
+    if not os.path.exists(json_file):
+        with open(json_file, 'w') as file:
+            json.dump({}, file)
+
+
+##############################################################################################
+##############################################################################################
+##############################################################################################
     
 global server_ip
 SERVER_IP = "https://technikag.serveo.net"
@@ -75,6 +87,10 @@ def admin_is_required(function):
     return decorator
 
 
+##############################################################################################
+##############################################################################################
+##############################################################################################
+
 class SpotifyServer:
     def __init__(self, StartServer=False):
         self.server = Flask(__name__)
@@ -85,7 +101,8 @@ class SpotifyServer:
         self.spotify_auth = SpotifyOAuth(client_id=spotify_data['spotify_client_id'],
                           client_secret=spotify_data['spotify_client_secret'],
                           redirect_uri=spotify_data['redirect_uri'],
-                          scope=spotify_data['spotify_scopes'])
+                          scope=spotify_data['spotify_scopes'],
+                          cache_path="Flask Server/.cache")
         
         #set the secret key. keep this really secret:
         self.server.secret_key = os.urandom(24)
@@ -223,7 +240,6 @@ class SpotifyServer:
                 return redirect(session.pop("next", "/loginsuccess"))
             except:
                 return redirect("/google/login")
-        
 
          
 
@@ -239,6 +255,10 @@ class SpotifyServer:
             #return the loginSuccsessful page
             return render_template('loginSuccessful.html')
         
+        
+        ##############################################################################################
+        ##############################################################################################
+        ##############################################################################################
 
         @self.server.route('/administrate/set_price_list', methods=['POST'])
         @admin_is_required
@@ -258,6 +278,27 @@ class SpotifyServer:
         
             return price_list
         
+        
+        @self.server.route('/administrate/set_show_spotify', methods=['POST'])
+        @admin_is_required
+        def set_show_spotify():
+            data = request.get_json()
+            with open('Flask Server/showSpotify.json', 'w') as json_file:
+                json.dump(data, json_file)
+        
+            return "Show Spotify has been updated."
+        
+        @self.server.route('/get_show_spotify', methods=['GET'])
+        def get_show_spotify():
+            with open('Flask Server/showSpotify.json') as json_file:
+                show_spotify = json.load(json_file)
+        
+            return show_spotify
+        
+        
+        ##############################################################################################
+        ##############################################################################################
+        ##############################################################################################
 
         @self.server.route('/administrate/get_user_data', methods=['GET'])
         @login_is_required
