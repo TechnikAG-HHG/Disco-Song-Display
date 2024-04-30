@@ -239,6 +239,14 @@ class SpotifyServer:
         
             return "Price list has been updated."
         
+        
+        @self.server.route('/get_price_list', methods=['GET'])
+        def get_price_list():
+            with open('Flask Server/savePriceList.json') as json_file:
+                price_list = json.load(json_file)
+        
+            return price_list
+        
 
         @self.server.route('/administrate/get_user_data', methods=['GET'])
         @login_is_required
