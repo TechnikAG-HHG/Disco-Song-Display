@@ -1,48 +1,127 @@
 var oldProgress = 0;
 
 function setBackgroundCoverImage(url) {
-    let currentSongCol = document.getElementById('currentSongCol');
-    let coverImage = document.getElementById('album-art');
+    let currentSongCol = document.getElementById("currentSongCol");
+    let coverImage = document.getElementById("album-art");
 
-    currentSongCol.style.background = "url('" + url + "')";
-    coverImage.src = url;
+    if (currentSongCol && coverImage) {
+        currentSongCol.style.background = "url('" + url + "')";
+        coverImage.src = url;
+    }
 }
 
 function setSongData(number, title, artist) {
     if (number == 0) {
-        var songName = document.getElementById('songname');
-        var songArtist = document.getElementById('song-artists');
+        var songName = document.getElementById("songname");
+        var songArtist = document.getElementById("song-artists");
     } else {
         var songName = document.getElementById(
-            'upcoming' + number + 'songname'
+            "upcoming" + number + "songname"
         );
         var songArtist = document.getElementById(
-            'upcoming' + number + 'artists'
+            "upcoming" + number + "artists"
         );
     }
 
+    if (!songName || !songArtist) {
+        return;
+    }
     songName.textContent = title;
     songArtist.textContent = artist;
 }
 
-function setProgress(progress, duration) {
-    var progressBar = document.getElementById('progressbar');
+function scrollText() {}
 
-    progressBar.setAttribute('max', duration);
-    progressBar.setAttribute('value', progress);
-    oldProgress = progress;
+function setProgress(progress, duration) {
+    var progressBar = document.getElementById("progressbar");
+
+    if (progressBar) {
+        progressBar.setAttribute("max", duration);
+        progressBar.setAttribute("value", progress);
+        oldProgress = progress;
+    }
 }
 
 function calculateProgress() {
-    var progressBar = document.getElementById('progressbar');
+    var progressBar = document.getElementById("progressbar");
 
-    var newValue = oldProgress + 10;
-    progressBar.setAttribute('value', newValue);
-    oldProgress = newValue;
+    if (progressBar) {
+        var newValue = oldProgress + 10;
+        progressBar.setAttribute("value", newValue);
+        oldProgress = newValue;
+    }
+}
+
+function setPriceList(data) {
+    var table = document.getElementById("priceList");
+
+    for (var i = 0; i < data.categories.length; i++) {
+        var category = data.categories[i];
+        var categoryRow = document.createElement("tr");
+        var categoryHeader = document.createElement("th");
+        categoryHeader.setAttribute("colspan", "3");
+        categoryHeader.textContent = category.name;
+        categoryRow.appendChild(categoryHeader);
+        table.appendChild(categoryRow);
+
+        for (var j = 0; j < category.entries.length; j++) {
+            var entry = category.entries[j];
+            var entryRow = document.createElement("tr");
+            var entryName = document.createElement("td");
+            var entryAmount = document.createElement("td");
+            var entryPrice = document.createElement("td");
+
+            entryName.textContent = entry.name;
+            entryAmount.textContent = entry.amount;
+            entryPrice.textContent = entry.price;
+
+            entryRow.appendChild(entryName);
+            entryRow.appendChild(entryAmount);
+            entryRow.appendChild(entryPrice);
+            table.appendChild(entryRow);
+        }
+    }
+}
+
+function turnSpotifyOff() {
+    let spotifyDiv = document.getElementById("spotify");
+    spotifyDiv.remove();
+}
+
+function turnSpotifyOn() {
+    let mainContainer = document.getElementsByClassName("main-container")[0];
+    let spotifyDiv = document.createElement("div");
+    spotifyDiv.id = "spotify";
+    mainContainer.appendChild(spotifyDiv);
+
+    spotifyDiv.innerHTML = `
+        <div id="currentSongCol" class="col-md pe-0"></div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <div id="currentSongDiv" class="container-fluid text-center">
+            <div id="gradient">
+                <img id="album-art" src="../testimage.png" />
+                <div id="currentSong" class="container songDiv">
+                    <h2 id="songname" class="scrolling-text">Songname</h2>
+                    <h3 id="song-artists" class="scrolling-text">Artist</h3>
+                    <progress id="progressbar" value="0" max="0"></progress>
+                </div>
+                <div id="upcoming1" class="container songDiv upcoming">
+                    <h2 id="upcoming1songname" class="scrolling-text">Upcoming Songname 1</h2>
+                    <h3 id="upcoming1artists" class="scrolling-text">Upcoming Artist 1</h3>
+                </div>
+                <div id="upcoming2" class="container songDiv upcoming">
+                    <h2 id="upcoming2songname" class="scrolling-text">Upcoming Songname 2</h2>
+                    <h3 id="upcoming2artists" class="scrolling-text">Upcoming Artist 2</h3>
+                </div>
+            </div>
+        </div>
+    `;
+
+    updateData();
 }
 
 function updateData() {
-    fetch('https://technikag.serveo.net/get_spotify').then((response) => {
+    fetch("http://192.168.178.56:5000/get_spotify").then((response) => {
         response
             .json()
             .then((data) => {
@@ -57,8 +136,22 @@ function updateData() {
                 }
             })
             .catch((error) => {
-                document.body.innerHTML = 'Error: ' + error;
-                console.error('Error:', error);
+                document.body.innerHTML = "Error: " + error;
+                console.error("Error:", error);
+            });
+    });
+
+    scrollText();
+
+    fetch("http://192.168.178.56/get_price_list").then((response) => {
+        response
+            .json()
+            .then((data) => {
+                console.log(data);
+                //setPriceList(data);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
             });
     });
 }
@@ -66,3 +159,36 @@ function updateData() {
 updateData();
 setInterval(updateData, 5000);
 setInterval(calculateProgress, 10);
+
+setPriceList({
+    categories: [
+        {
+            name: "Essen",
+            entries: [
+                {
+                    name: "Schnitzel",
+                    amount: "1 Stück",
+                    price: "20€",
+                },
+                {
+                    name: "Thunfish",
+                    amount: "1 Dose",
+                    price: "10€",
+                },
+            ],
+        },
+        {
+            name: "Getränke",
+            entries: [
+                {
+                    name: "Fanta",
+                    amount: "0.5l",
+                    price: "0.99€",
+                },
+            ],
+        },
+    ],
+});
+
+turnSpotifyOff();
+setTimeout(turnSpotifyOn, 10000);

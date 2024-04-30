@@ -21,7 +21,7 @@ body {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 /* Everything for nice pricelist view */
@@ -73,7 +73,7 @@ body {
 }
 
 /* Everything for nice song view */
-.spotify {
+#spotify {
     height: 100vh;
     width: 50%;
 }

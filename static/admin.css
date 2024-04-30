@@ -32,22 +32,60 @@ body {
 .category {
     display: flex;
     flex-direction: column;
-    width: 100%;
     margin-bottom: 4vh;
+    justify-content: center;
 }
 
 .category input {
     width: 40%;
     align-self: center;
+    text-align: center;
+    height: 4vh;
 }
 
 .buttons {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    margin-top: 2vh;
 }
 
 .buttons button {
     width: 30%;
     height: 4vh;
+}
+
+.entry {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    margin-top: 1vh;
+}
+
+.entry input {
+    margin-right: 1vw;
+    width: 30%;
+    height: 4vh;
+    text-align: center;
+}
+
+.entry button {
+    width: 20%;
+    height: 4vh;
+}
+
+#category-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    margin-top: 5vh;
+}
+
+.entries {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 1vh;
+    flex-direction: column;
 }
