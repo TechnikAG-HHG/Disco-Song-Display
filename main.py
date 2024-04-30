@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, make_response
+from flask import Flask, request, redirect, render_template, session, make_response, url_for
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
@@ -120,7 +120,7 @@ class SpotifyServer:
         @admin_is_required
         def user_login():
             auth_url = self.spotify_auth.get_authorize_url()
-            return redirect(auth_url)
+            return redirect(url_for('auth_callback'))
 
 
         @self.server.route('/callback')
@@ -196,6 +196,7 @@ class SpotifyServer:
             try:
                 global session
                 state = session.pop("state", None)  # Use pop to get and remove state from session
+                print(f"State: {state}")  # Debug print
                 if state is None or state != request.args.get("state"):
                     return redirect("/google/login")
         

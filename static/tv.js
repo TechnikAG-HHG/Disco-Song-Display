@@ -121,7 +121,7 @@ function turnSpotifyOn() {
 }
 
 function updateData() {
-    fetch("http://192.168.178.56:5000/get_spotify").then((response) => {
+    fetch("https://technikag.serveo.net/get_spotify").then((response) => {
         response
             .json()
             .then((data) => {
