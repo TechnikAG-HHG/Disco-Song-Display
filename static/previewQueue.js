@@ -16,6 +16,7 @@ const createPlayer = (songData, index) => {
         const audio = document.getElementById(`player${index}`);
         const source = document.getElementById(`song${index}-source`);
         source.src = songData.preview_url;
+        audio.load(); // Load the audio element again
     }
 };
 
