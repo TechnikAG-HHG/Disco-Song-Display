@@ -38,6 +38,10 @@ body {
     width: 50%;
     white-space: nowrap;
     padding-top: 2vmin !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .pricelist h1 {
@@ -47,10 +51,9 @@ body {
 
 .foodtable {
     color: #ffffff;
-    text-align: left;
     width: 70%;
-    display: inline-table;
     margin-bottom: 2vmin !important;
+    text-align: left;
 }
 
 .foodtable th {
@@ -85,6 +88,8 @@ body {
 
 .scroll {
     animation: marquee 30s linear infinite;
+    transform: translate3d(0, 0, 0);
+    z-index: 9999;
 }
 
 @keyframes marquee {
@@ -92,7 +97,7 @@ body {
     20%,
     80%,
     100% {
-        transform: translateX(0%);
+        transform: translateY(0%);
     }
     40%,
     60% {
@@ -246,35 +251,4 @@ h1 {
 .upcoming {
     padding: 1vmin !important;
     border-radius: 2.5vmin;
-}
-
-@-moz-keyframes scroll-left {
-    0% {
-        -moz-transform: translateX(100%);
-    }
-    100% {
-        -moz-transform: translateX(-100%);
-    }
-}
-
-@-webkit-keyframes scroll-left {
-    0% {
-        -webkit-transform: translateX(100%);
-    }
-    100% {
-        -webkit-transform: translateX(-100%);
-    }
-}
-
-@keyframes scroll-left {
-    0% {
-        -moz-transform: translateX(100%);
-        -webkit-transform: translateX(100%);
-        transform: translateX(100%);
-    }
-    100% {
-        -moz-transform: translateX(-100%);
-        -webkit-transform: translateX(-100%);
-        transform: translateX(-100%);
-    }
 }

@@ -218,7 +218,7 @@ class SpotifyServer:
                     # get the two next songs in the queue
                     next_track_info_json = queue['queue'][id]
                     next_track_name = next_track_info_json['name']
-                    next_track_artist = next_track_info_json['artists'][0]['name']
+                    next_track_artist = ", ".join([artist['name'] for artist in next_track_info_json['artists']])
                     #next_track_album = next_track_info_json['album']['name']
                     next_track_image = next_track_info_json['album']['images'][0]['url']
                     #next_track_url = next_track_info_json['external_urls']['spotify']
