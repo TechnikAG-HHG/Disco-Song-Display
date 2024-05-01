@@ -31,8 +31,6 @@ function setSongData(number, title, artist) {
     songArtist.textContent = artist;
 }
 
-function scrollText() {}
-
 function setProgress(progress, duration) {
     try {
         var progressBar = document.getElementById("progressbar");
@@ -148,7 +146,7 @@ function checkForScroll() {
         var canvas = document.getElementById("confetti-canvas");
 
         console.log("Visible height:", canvas.scrollHeight);
-        console.log("Complete height:", pricelist.clientHeight);
+        console.log("Complete height:", pricelist.offsetHeight);
         if (canvas.scrollHeight < pricelist.clientHeight) {
             var scrollAmount = pricelist.scrollHeight - canvas.scrollHeight;
             pricelist.style.setProperty("--scroll-amount", scrollAmount + "px");
