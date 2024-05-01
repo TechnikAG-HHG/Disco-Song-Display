@@ -228,3 +228,124 @@ window.addEventListener("resize", function () {
 updateData();
 setInterval(updateData, 5000);
 setInterval(calculateProgress, 30);
+
+// var particlesDiv = document.getElementById("particles");
+// var particlesPool = [];
+// var poolSize = 20; // Reduced pool size
+
+// // Create a pool of particles
+// for (var i = 0; i < poolSize; i++) {
+//     var particle = document.createElement("div");
+//     particle.style.position = "absolute";
+//     particle.style.bottom = "0px";
+//     particle.style.width = "13px";
+//     particle.style.height = "13px";
+//     particle.style.backgroundColor = "#debd90";
+//     particle.style.borderRadius = "50%";
+//     particle.style.boxShadow = "0 0 10px #debd90";
+//     particle.style.opacity = "1";
+//     particlesPool.push(particle);
+// }
+
+// var activeParticles = []; // Array to store active particles
+
+// // Function to generate a particle
+// function generateParticle() {
+//     var particle = particlesPool.pop();
+//     if (!particle) return;
+
+//     particle.style.bottom = "0px";
+//     particle.style.opacity = "1";
+
+//     // Determine the initial position of the particle
+//     var position;
+//     var horizontalMovement;
+//     var spawnerMiddle;
+//     if (Math.random() < 0.5) {
+//         // Generate the particle on the left side of the screen
+//         position =
+//             window.innerWidth * 0.2 +
+//             Math.random(-1, 1) * window.innerWidth * 0.02;
+//         spawnerMiddle = window.innerWidth * 0.21;
+//         // Adjust the horizontal movement based on the initial position relative to the middle of the spawner
+//         horizontalMovement = (position - spawnerMiddle) / 30;
+//     } else {
+//         // Generate the particle on the right side of the screen
+//         position =
+//             window.innerWidth * 0.8 +
+//             Math.random(-1, 1) * window.innerWidth * 0.02;
+//         spawnerMiddle = window.innerWidth * 0.81;
+//         // Adjust the horizontal movement based on the initial position relative to the middle of the spawner
+//         horizontalMovement = (position - spawnerMiddle) / 30;
+//     }
+//     particle.style.left = position + "px";
+
+//     particlesDiv.appendChild(particle);
+
+//     var speed = Math.random() * 8 + 2;
+//     var direction = "up";
+//     var hoverTime = 0;
+
+//     activeParticles.push({
+//         particle,
+//         speed,
+//         direction,
+//         hoverTime,
+//         horizontalMovement,
+//     }); // Add the particle to the active particles array
+// }
+
+// // Function to update all active particles
+// function updateParticles() {
+//     for (var i = activeParticles.length - 1; i >= 0; i--) {
+//         var { particle, speed, direction, hoverTime, horizontalMovement } =
+//             activeParticles[i];
+
+//         var bottom = parseFloat(particle.style.bottom);
+//         var left = parseFloat(particle.style.left);
+
+//         if (direction === "up") {
+//             speed -= 0.05;
+//             particle.style.bottom = bottom + speed + "px";
+//             particle.style.left = left + horizontalMovement + "px";
+//             if (speed <= 0) {
+//                 hoverTime++;
+//                 if (hoverTime >= 3) {
+//                     direction = "down";
+//                     speed = 0;
+//                 }
+//             }
+//         } else {
+//             speed += 0.05;
+//             particle.style.bottom = bottom - speed + "px";
+//             particle.style.opacity = parseFloat(particle.style.opacity) - 0.01;
+//             if (parseFloat(particle.style.opacity) <= 0) {
+//                 particlesDiv.removeChild(particle);
+//                 particlesPool.push(particle);
+//                 activeParticles.splice(i, 1); // Remove the particle from the active particles array
+//                 continue;
+//             }
+//         }
+
+//         // Update the particle's properties in the active particles array
+//         activeParticles[i] = {
+//             particle,
+//             speed,
+//             direction,
+//             hoverTime,
+//             horizontalMovement,
+//         };
+//     }
+
+//     requestAnimationFrame(updateParticles); // Continue the animation
+// }
+
+// // Generate new particles continuously
+// setInterval(function () {
+//     for (var i = 0; i < 6; i++) {
+//         // Reduced number of particles generated
+//         generateParticle();
+//     }
+// }, 30);
+
+// requestAnimationFrame(updateParticles); // Start the animation
