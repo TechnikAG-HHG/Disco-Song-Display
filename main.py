@@ -18,10 +18,21 @@ import subprocess
 json_files = ['Flask Server/savePriceList.json', 'Flask Server/showSpotify.json', 'Flask Server/data.json', 'Flask Server/admins.json']
 
 for json_file in json_files:
-    if not os.path.exists(json_file):
-        with open(json_file, 'w') as file:
-            json.dump({}, file)
-
+    try:
+        if not os.path.exists(json_file):
+            with open(json_file, 'w') as file:
+                json.dump({}, file)
+        else:
+            with open(json_file, 'r') as file:
+                try:
+                    content = json.load(file)
+                    if not isinstance(content, dict):
+                        raise ValueError
+                except ValueError:
+                    with open(json_file, 'w') as file:
+                        json.dump({}, file)
+    except Exception as e:
+        print(f"An error occurred with file {json_file}: {e}")
 
 ##############################################################################################
 ##############################################################################################
@@ -170,6 +181,21 @@ class SpotifyServer:
 
                 output = {}
 
+                current_track_info_json = spotify_client.current_user_playing_track()
+
+                if current_track_info_json['is_playing'] == False:
+                    # return the same json sring but with none values
+                    output[0] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+                    output[1] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+                    output[2] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+                    print("No song is currently playing.")
+                    return output
+                
+                print(current_track_info_json)
+
+                progress = current_track_info_json['progress_ms']
+
+
                 queue = spotify_client.queue()
 
                 # look at the currently playing song
@@ -183,9 +209,6 @@ class SpotifyServer:
                 #current_track_url = current_track_info_json['external_urls']['spotify']
                 current_track_duration = current_track_info_json['duration_ms']
 
-                current_track_info_json = spotify_client.current_user_playing_track()
-
-                progress = current_track_info_json['progress_ms']
 
                 # put it into a json in the format: {0: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}, 1: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}, 2: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}}
                 
