@@ -18,10 +18,21 @@ import subprocess
 json_files = ['Flask Server/savePriceList.json', 'Flask Server/showSpotify.json', 'Flask Server/data.json', 'Flask Server/admins.json']
 
 for json_file in json_files:
-    if not os.path.exists(json_file):
-        with open(json_file, 'w') as file:
-            json.dump({}, file)
-
+    try:
+        if not os.path.exists(json_file):
+            with open(json_file, 'w') as file:
+                json.dump({}, file)
+        else:
+            with open(json_file, 'r') as file:
+                try:
+                    content = json.load(file)
+                    if not isinstance(content, dict):
+                        raise ValueError
+                except ValueError:
+                    with open(json_file, 'w') as file:
+                        json.dump({}, file)
+    except Exception as e:
+        print(f"An error occurred with file {json_file}: {e}")
 
 ##############################################################################################
 ##############################################################################################
@@ -162,6 +173,14 @@ class SpotifyServer:
         ##############################################################################################
         ##############################################################################################
 
+        def return_no_song_playing():
+            output = {}
+            output[0] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+            output[1] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+            output[2] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+            return output
+
+
         @self.server.route('/get_spotify')
         def get_spotify_data():
             token_info = self.spotify_auth.get_cached_token()
@@ -169,6 +188,25 @@ class SpotifyServer:
                 spotify_client = spotipy.Spotify(auth=token_info['access_token'])
 
                 output = {}
+
+                current_track_info_json = spotify_client.current_user_playing_track()
+
+                if getattr(current_track_info_json, 'get', None) is None:
+                    # return the same json sring but with none values
+                    output = return_no_song_playing()
+                    print("No song is currently playing.1")
+                    return output
+
+                if current_track_info_json['is_playing'] == False:
+                    # return the same json sring but with none values
+                    output = return_no_song_playing()
+                    print("No song is currently playing.2")
+                    # print(current_track_info_json)
+                    return output
+                
+                # print(current_track_info_json)
+
+                progress = current_track_info_json['progress_ms']
 
                 queue = spotify_client.queue()
 
@@ -183,9 +221,6 @@ class SpotifyServer:
                 #current_track_url = current_track_info_json['external_urls']['spotify']
                 current_track_duration = current_track_info_json['duration_ms']
 
-                current_track_info_json = spotify_client.current_user_playing_track()
-
-                progress = current_track_info_json['progress_ms']
 
                 # put it into a json in the format: {0: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}, 1: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}, 2: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}}
                 
@@ -196,9 +231,7 @@ class SpotifyServer:
                     next_track_info_json = queue['queue'][id]
                     next_track_name = next_track_info_json['name']
                     next_track_artist = ", ".join([artist['name'] for artist in next_track_info_json['artists']])
-                    #next_track_album = next_track_info_json['album']['name']
                     next_track_image = next_track_info_json['album']['images'][0]['url']
-                    #next_track_url = next_track_info_json['external_urls']['spotify']
                     next_track_duration = next_track_info_json['duration_ms']
 
                     # put it into the json
@@ -207,6 +240,45 @@ class SpotifyServer:
                 return output
             else:
                 return "User is not authorized."
+        
+        @self.server.route('/get_queue/<int:queue_id>')
+        def get_queue(queue_id):
+            try:
+                token_info = self.spotify_auth.get_cached_token()
+                if token_info:
+                    spotify_client = spotipy.Spotify(auth=token_info['access_token'])
+
+                    output = {}
+
+                    queue = spotify_client.queue()
+
+                    if getattr(queue, 'get', None) is None:
+                        return "No queue available."
+                    
+                    for id in range(0, queue_id):
+                        # get the two next songs in the queue
+                        next_track_info_json = queue['queue'][id]
+                        next_track_name = next_track_info_json['name']
+                        next_track_artist = ", ".join([artist['name'] for artist in next_track_info_json['artists']])
+                        next_track_image = next_track_info_json['album']['images'][0]['url']
+                        next_track_duration = next_track_info_json['duration_ms']
+                        next_track_preview_url = next_track_info_json['preview_url']
+
+                        # put it into the json
+                        output[id+1] = {"title": next_track_name, "artists": next_track_artist, "progress": 0, "duration": next_track_duration, "image": next_track_image, "preview_url": next_track_preview_url}
+
+                    # print("Queue has been sent: " + str(output))
+
+                    return output
+                else:
+                    return "User is not authorized."
+            except Exception as e:
+                return str(e)
+            
+        
+        @self.server.route('/previewQueue')
+        def previewQueue():
+            return render_template('previewQueue.html')
         
         
         @self.server.route("/google/login")
