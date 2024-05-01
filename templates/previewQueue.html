@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spotify Preview Player</title>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='previewQueue.css') }}"
+        />
+    </head>
+    <body>
+        <div id="players-container">
+            <!-- Players will be inserted here by the JavaScript code -->
+        </div>
+        <script src="{{ url_for('static', filename='previewQueue.js') }}"></script>
+    </body>
+</html>
