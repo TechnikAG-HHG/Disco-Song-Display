@@ -43,7 +43,7 @@ function setProgress(progress, duration) {
             oldProgress = progress;
         }
     } catch (error) {
-        document.body.innerHTML = "Error: " + error;
+        console.log("Error:", error);
     }
 }
 
@@ -57,7 +57,7 @@ function calculateProgress() {
             oldProgress = newValue;
         }
     } catch (error) {
-        document.body.innerHTML = "Error: " + error;
+        console.log("Error:", error);
     }
 }
 
@@ -143,15 +143,19 @@ function renderConfetti() {
 }
 
 function checkForScroll() {
-    var pricelist = document.getElementsByClassName("pricelist")[0];
-    var canvas = document.getElementById("confetti-canvas");
+    try {
+        var pricelist = document.getElementsByClassName("pricelist")[0];
+        var canvas = document.getElementById("confetti-canvas");
 
-    console.log("Visible height:", canvas.scrollHeight);
-    console.log("Complete height:", pricelist.clientHeight);
-    if (canvas.scrollHeight < pricelist.clientHeight) {
-        var scrollAmount = pricelist.scrollHeight - canvas.scrollHeight;
-        pricelist.style.setProperty("--scroll-amount", scrollAmount + "px");
-        pricelist.classList.add("scroll");
+        console.log("Visible height:", canvas.scrollHeight);
+        console.log("Complete height:", pricelist.clientHeight);
+        if (canvas.scrollHeight < pricelist.clientHeight) {
+            var scrollAmount = pricelist.scrollHeight - canvas.scrollHeight;
+            pricelist.style.setProperty("--scroll-amount", scrollAmount + "px");
+            pricelist.classList.add("scroll");
+        }
+    } catch (error) {
+        console.log("Error:", error);
     }
 }
 
@@ -172,7 +176,6 @@ function updateData() {
                     }
                 })
                 .catch((error) => {
-                    document.body.innerHTML = "Error: " + error;
                     console.error("Error:", error);
                 });
         });
@@ -211,18 +214,17 @@ function updateData() {
                 });
         });
     } catch (error) {
-        document.body.innerHTML = "Error: " + error;
+        console.log("Error:", error);
     }
 }
 
-setTimeout(checkForScroll, 1000);
-
 renderConfetti();
-window.addEventListener("resize", renderConfetti);
+setTimeout(checkForScroll, 1000);
+window.addEventListener("resize", function () {
+    checkForScroll();
+    renderConfetti();
+});
 
 updateData();
 setInterval(updateData, 5000);
 setInterval(calculateProgress, 30);
-
-// turnSpotifyOff();
-// setTimeout(turnSpotifyOn, 10000);
