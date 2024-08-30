@@ -133,7 +133,7 @@ function renderConfetti() {
     const confetti = new ConfettiGenerator({
         target: "confetti-canvas",
         clock: 10,
-        max: 150,
+        max: 50,
     });
 
     // Configure the confetti animation
@@ -225,7 +225,7 @@ window.addEventListener("resize", function () {
 
 updateData();
 setInterval(updateData, 5000);
-setInterval(calculateProgress, 30);
+//setInterval(calculateProgress, 1000);
 
 // var particlesDiv = document.getElementById("particles");
 // var particlesPool = [];

@@ -116,7 +116,7 @@ body {
     background-size: cover;
     background-position: center;
     width: 100%;
-    filter: url(#blur-grayscale);
+    /* filter: blur(10px) grayscale(30%); */
     z-index: 1;
     position: relative; /* Add position relative */
 }
