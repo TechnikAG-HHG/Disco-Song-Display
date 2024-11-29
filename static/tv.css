@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap%27");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap%27');
 
 * {
     margin: 0 !important;
@@ -9,7 +9,7 @@
 
 body {
     background-color: #1a1a1a;
-    font-family: "Montserrat" !important;
+    font-family: 'Montserrat' !important;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -116,9 +116,9 @@ body {
     background-size: cover;
     background-position: center;
     width: 100%;
-    /* filter: blur(10px) grayscale(30%); */
     z-index: 1;
     position: relative; /* Add position relative */
+    filter: grayscale(50%) blur(5px); /* Add filter */
 }
 
 #currentSongDiv {
