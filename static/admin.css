@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap%27");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap%27');
 
 * {
     padding: 0 !important;
@@ -7,12 +7,17 @@
 
 body {
     background-color: #1a1a1a;
-    font-family: "Montserrat" !important;
+    font-family: 'Montserrat' !important;
     margin: 0;
     margin: 0 0 2em 0;
     width: 100%;
     overflow-y: scroll; /* Enable vertical scrolling */
     padding-bottom: 10vh !important;
+}
+
+button,
+input {
+    color: white !important;
 }
 
 .button-bottom {
