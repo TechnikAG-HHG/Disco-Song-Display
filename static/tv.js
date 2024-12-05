@@ -1,9 +1,11 @@
 var oldProgress = 0;
 var spotifyEnabled = true;
+let previousImage = null;
+let songData = null;
 
 function setBackgroundCoverImage(url) {
-    let currentSongCol = document.getElementById("currentSongCol");
-    let coverImage = document.getElementById("album-art");
+    let currentSongCol = document.getElementById('currentSongCol');
+    let coverImage = document.getElementById('album-art');
 
     if (currentSongCol && coverImage) {
         currentSongCol.style.background = "url('" + url + "')";
@@ -13,14 +15,14 @@ function setBackgroundCoverImage(url) {
 
 function setSongData(number, title, artist) {
     if (number == 0) {
-        var songName = document.getElementById("songname");
-        var songArtist = document.getElementById("song-artists");
+        var songName = document.getElementById('songname');
+        var songArtist = document.getElementById('song-artists');
     } else {
         var songName = document.getElementById(
-            "upcoming" + number + "songname"
+            'upcoming' + number + 'songname'
         );
         var songArtist = document.getElementById(
-            "upcoming" + number + "artists"
+            'upcoming' + number + 'artists'
         );
     }
 
@@ -33,51 +35,52 @@ function setSongData(number, title, artist) {
 
 function setProgress(progress, duration) {
     try {
-        var progressBar = document.getElementById("progressbar");
+        var progressBar = document.getElementById('progressbar');
 
         if (progressBar) {
-            progressBar.setAttribute("max", duration);
-            progressBar.setAttribute("value", progress);
+            progressBar.setAttribute('max', duration);
+            progressBar.setAttribute('value', progress);
             oldProgress = progress;
         }
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
     }
 }
 
 function calculateProgress() {
     try {
-        var progressBar = document.getElementById("progressbar");
+        // console.log('Calculating progress');
+        var progressBar = document.getElementById('progressbar');
 
         if (progressBar) {
-            var newValue = oldProgress + 30;
-            progressBar.setAttribute("value", newValue);
+            var newValue = oldProgress + 100;
+            progressBar.setAttribute('value', newValue);
             oldProgress = newValue;
         }
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
     }
 }
 
 function setPriceList(data) {
-    var table = document.getElementById("priceList");
-    table.innerHTML = ""; // Clear the table first
+    var table = document.getElementById('priceList');
+    table.innerHTML = ''; // Clear the table first
 
     for (var i = 0; i < data.categories.length; i++) {
         var category = data.categories[i];
-        var categoryRow = document.createElement("tr");
-        var categoryHeader = document.createElement("th");
-        categoryHeader.setAttribute("colspan", "3");
+        var categoryRow = document.createElement('tr');
+        var categoryHeader = document.createElement('th');
+        categoryHeader.setAttribute('colspan', '3');
         categoryHeader.textContent = category.name;
         categoryRow.appendChild(categoryHeader);
         table.appendChild(categoryRow);
 
         for (var j = 0; j < category.entries.length; j++) {
             var entry = category.entries[j];
-            var entryRow = document.createElement("tr");
-            var entryName = document.createElement("td");
-            var entryAmount = document.createElement("td");
-            var entryPrice = document.createElement("td");
+            var entryRow = document.createElement('tr');
+            var entryName = document.createElement('td');
+            var entryAmount = document.createElement('td');
+            var entryPrice = document.createElement('td');
 
             entryName.textContent = entry.name;
             entryAmount.textContent = entry.amount;
@@ -92,14 +95,15 @@ function setPriceList(data) {
 }
 
 function turnSpotifyOff() {
-    let spotifyDiv = document.getElementById("spotify");
+    let spotifyDiv = document.getElementById('spotify');
     spotifyDiv.remove();
+    // backgroundCoverImage = null;
 }
 
 function turnSpotifyOn() {
-    let mainContainer = document.getElementsByClassName("main-container")[0];
-    let spotifyDiv = document.createElement("div");
-    spotifyDiv.id = "spotify";
+    let mainContainer = document.getElementsByClassName('main-container')[0];
+    let spotifyDiv = document.createElement('div');
+    spotifyDiv.id = 'spotify';
     mainContainer.appendChild(spotifyDiv);
 
     spotifyDiv.innerHTML = `
@@ -107,7 +111,7 @@ function turnSpotifyOn() {
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <div id="currentSongDiv" class="container-fluid text-center">
             <div id="gradient">
-                <img id="album-art" src="../testimage.png" />
+                <img id="album-art" />
                 <div id="currentSong" class="container songDiv">
                     <h2 id="songname" class="scrolling-text">Songname</h2>
                     <h3 id="song-artists" class="scrolling-text">Artist</h3>
@@ -124,14 +128,14 @@ function turnSpotifyOn() {
             </div>
         </div>
     `;
-
+    previousImage = null;
     updateData();
 }
 
 function renderConfetti() {
     // Create a new instance of the ConfettiGenerator
     const confetti = new ConfettiGenerator({
-        target: "confetti-canvas",
+        target: 'confetti-canvas',
         clock: 10,
         max: 50,
     });
@@ -142,59 +146,66 @@ function renderConfetti() {
 
 function checkForScroll() {
     try {
-        var pricelist = document.getElementsByClassName("pricelist")[0];
-        var canvas = document.getElementById("confetti-canvas");
+        var pricelist = document.getElementsByClassName('pricelist')[0];
+        var canvas = document.getElementById('confetti-canvas');
 
-        console.log("Visible height:", canvas.scrollHeight);
-        console.log("Complete height:", pricelist.offsetHeight);
+        console.log('Visible height:', canvas.scrollHeight);
+        console.log('Complete height:', pricelist.offsetHeight);
         if (canvas.scrollHeight < pricelist.clientHeight) {
             var scrollAmount = pricelist.scrollHeight - canvas.scrollHeight;
-            pricelist.style.setProperty("--scroll-amount", scrollAmount + "px");
-            pricelist.classList.add("scroll");
+            pricelist.style.setProperty('--scroll-amount', scrollAmount + 'px');
+            pricelist.classList.add('scroll');
         }
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
     }
 }
 
 function updateData() {
     try {
-        fetch("/get_spotify").then((response) => {
+        fetch('/get_spotify').then((response) => {
             response
                 .json()
                 .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                     for (var i = 0; i < 3; i++) {
-                        console.log(data[i]);
+                        // console.log(data[i]);
                         if (i == 0) {
-                            setBackgroundCoverImage(data[i].image);
+                            if (previousImage !== data[i].image) {
+                                console.log('Setting background image');
+                                setBackgroundCoverImage(data[i].image);
+                                previousImage = data[i].image;
+                            }
                             setProgress(data[i].progress, data[i].duration);
                         }
-                        setSongData(i, data[i].title, data[i].artists);
+                        if (data[i].title != songData) {
+                            songData = data[i].title;
+                            setSongData(i, data[i].title, data[i].artists);
+                        }
                     }
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
+                    console.error('Error:', error);
                 });
         });
 
-        fetch("/get_price_list").then((response) => {
+        fetch('/get_price_list').then((response) => {
             response
                 .json()
                 .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                     setPriceList(data);
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
+                    console.error('Error:', error);
                 });
         });
 
-        fetch("/get_show_spotify").then((response) => {
+        fetch('/get_show_spotify').then((response) => {
             response
                 .json()
                 .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                     if (data.enable == true) {
                         if (!spotifyEnabled) {
                             turnSpotifyOn();
@@ -208,24 +219,24 @@ function updateData() {
                     }
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
+                    console.error('Error:', error);
                 });
         });
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
     }
 }
 
 renderConfetti();
 setTimeout(checkForScroll, 1000);
-window.addEventListener("resize", function () {
+window.addEventListener('resize', function () {
     checkForScroll();
     renderConfetti();
 });
 
 updateData();
-setInterval(updateData, 5000);
-//setInterval(calculateProgress, 1000);
+setInterval(updateData, 1000);
+setInterval(calculateProgress, 100);
 
 // var particlesDiv = document.getElementById("particles");
 // var particlesPool = [];

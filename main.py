@@ -179,64 +179,65 @@ class SpotifyServer:
             output[1] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
             output[2] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
             return output
-
-
+        
+        
         @self.server.route('/get_spotify')
         def get_spotify_data():
             token_info = self.spotify_auth.get_cached_token()
             if token_info:
                 spotify_client = spotipy.Spotify(auth=token_info['access_token'])
-
+        
                 output = {}
-
+        
                 current_track_info_json = spotify_client.current_user_playing_track()
-
+        
                 if getattr(current_track_info_json, 'get', None) is None:
-                    # return the same json sring but with none values
+                    # return the same json string but with none values
                     output = return_no_song_playing()
                     print("No song is currently playing.1")
                     return output
-
+        
                 if current_track_info_json['is_playing'] == False:
-                    # return the same json sring but with none values
+                    # return the same json string but with none values
                     output = return_no_song_playing()
                     print("No song is currently playing.2")
-                    # print(current_track_info_json)
                     return output
-                
-                # print(current_track_info_json)
-
+        
                 progress = current_track_info_json['progress_ms']
-
+        
                 queue = spotify_client.queue()
-
+                # Ensure the queue is sorted based on the order provided by Spotify
+                sorted_queue = queue['queue']
+        
                 # look at the currently playing song
                 current_track_info_json = queue['currently_playing']
-                # print(current_track_info_json)
-
+                # print("Currently playing track info:", current_track_info_json['name'])
+        
                 current_track_name = current_track_info_json['name']
                 current_track_artist = ", ".join([artist['name'] for artist in current_track_info_json['artists']])
-                #current_track_album = current_track_info_json['album']['name']
                 current_track_image = current_track_info_json['album']['images'][0]['url']
-                #current_track_url = current_track_info_json['external_urls']['spotify']
                 current_track_duration = current_track_info_json['duration_ms']
-
-
+        
                 # put it into a json in the format: {0: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}, 1: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}, 2: {"title": "xyz", "artists": "xyz", "progress": 123, "duration": 123, "image": "xyz"}}
-                
                 output[0] = {"title": current_track_name, "artists": current_track_artist, "progress": progress, "duration": current_track_duration, "image": current_track_image}
-
-                for id in range(0,2):
-                    # get the two next songs in the queue
-                    next_track_info_json = queue['queue'][id]
-                    next_track_name = next_track_info_json['name']
-                    next_track_artist = ", ".join([artist['name'] for artist in next_track_info_json['artists']])
-                    next_track_image = next_track_info_json['album']['images'][0]['url']
-                    next_track_duration = next_track_info_json['duration_ms']
-
-                    # put it into the json
-                    output[id+1] = {"title": next_track_name, "artists": next_track_artist, "progress": 0, "duration": next_track_duration, "image": next_track_image}
-
+        
+                for id in range(0, 2):
+                    try:
+                        # get the two next songs in the queue
+                        next_track_info_json = sorted_queue[id]
+                        # print(f"Next track info (id={id}):", next_track_info_json)  # Debugging statement
+        
+                        next_track_name = next_track_info_json['name']
+                        next_track_artist = ", ".join([artist['name'] for artist in next_track_info_json['artists']])
+                        next_track_image = next_track_info_json['album']['images'][0]['url']
+                        next_track_duration = next_track_info_json['duration_ms']
+        
+                        # put it into the json
+                        output[id + 1] = {"title": next_track_name, "artists": next_track_artist, "progress": 0, "duration": next_track_duration, "image": next_track_image}
+                    except IndexError:
+                        # print(f"No track found in queue at position {id}")  # Error handling
+                        output[id + 1] = {"title": None, "artists": None, "progress": None, "duration": None, "image": None}
+        
                 return output
             else:
                 return "User is not authorized."
