@@ -400,6 +400,6 @@ if __name__ == '__main__':
 
     if start_server_and_ssh:
         print("Starting Serveo SSH connection...")
-        subprocess.Popen(["python", "serveo_shh_connect.py"])
+        # subprocess.Popen(["python", "serveo_shh_connect.py"])
     
     spotify_server = SpotifyServer(StartServer=True)

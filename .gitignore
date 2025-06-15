@@ -9,3 +9,5 @@ key
 Flask Server/admins.json
 .vscode/settings.json
 /Flask Server
+visualizer/package-lock.json
+/visualizer_server/target
