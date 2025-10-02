@@ -126,7 +126,7 @@ class SpotifyServer:
         
     # Modify the start_server method
     def start_server(self):
-        self.server.run(debug=True, threaded=True, port=5000, host="0.0.0.0", use_reloader=True)
+        self.server.run(debug=True, threaded=True, port=8000, host="0.0.0.0", use_reloader=True)
         #server_ip = get_server_ip()
 
         SERVER_IP = request.url_root

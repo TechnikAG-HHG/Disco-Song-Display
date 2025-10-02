@@ -9,3 +9,4 @@ key
 Flask Server/admins.json
 .vscode/settings.json
 /Flask Server
+/.venv
