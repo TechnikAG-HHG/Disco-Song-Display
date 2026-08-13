@@ -51,7 +51,7 @@ admins_file = os.path.join(pathlib.Path(__file__).parent, "Flask Server/admins.j
 flow = Flow.from_client_secrets_file(
     client_secrets_file=client_secrets_file,
     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="https://technikag.serveo.net/google/callback"
+    redirect_uri="https://blabalbla.de/google/callback"
 )
 
 
